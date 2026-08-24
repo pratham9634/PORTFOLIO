@@ -183,9 +183,9 @@ export const DEFAULT_ABOUT_DATA: AboutData = {
   },
   resume: {
     showButton: true,
-    buttonText: 'Download Resume',
+    buttonText: 'View Resume',
     subText: 'PDF • Updated 2026',
-    fileUrl: '/resume.pdf',
-    fileName: 'Pratham_Resume.pdf',
+    fileUrl: '/PRATHAM_RESUME_J.pdf',
+    fileName: 'PRATHAM_RESUME_J.pdf',
   },
 };

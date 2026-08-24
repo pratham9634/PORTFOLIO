@@ -429,9 +429,9 @@ export const Hero: React.FC<HeroProps> = ({ ready = true }) => {
             >
               {/* Resume */}
               <a
-                href="/resume.pdf"
+                href="/PRATHAM_RESUME_J.pdf"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="badge group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1a0f09]/85 text-white font-bold text-xs tracking-wide shadow-md hover:scale-105 hover:-translate-y-0.5 active:scale-95 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
                 style={{ fontFamily: 'var(--font-kalam)', opacity: 0 }}
               >

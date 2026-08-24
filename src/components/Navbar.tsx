@@ -615,9 +615,9 @@ export const Navbar: React.FC = () => {
             <div className="pt-2.5 border-t-2 border-dashed border-[#1c1917]/20 flex flex-col gap-2 shrink-0">
               {/* Quick Resume Download Pill Action */}
               <a
-                href="/resume.pdf"
+                href="/PRATHAM_RESUME_J.pdf"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="group w-full py-2 px-3.5 rounded-xl bg-[#1c1917] text-white flex items-center justify-between shadow-[2px_3px_0px_#8c7b6d] hover:shadow-[3px_4px_0px_#8c7b6d] hover:-translate-y-1 hover:scale-[1.025] active:translate-y-0.5 active:scale-[0.96] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer"
               >
                 <div className="flex items-center gap-2">

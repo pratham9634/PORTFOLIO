@@ -415,7 +415,6 @@ export const About: React.FC<AboutProps> = ({ data: userOverrides }) => {
 
                         <a
                           href={data.resume.fileUrl}
-                          download={data.resume.fileName || "Resume.pdf"}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="block cursor-pointer"
@@ -451,11 +450,10 @@ export const About: React.FC<AboutProps> = ({ data: userOverrides }) => {
                                 </div>
                               </div>
 
-                              {/* Hand-Drawn Animated Download Arrow */}
+                              {/* Hand-Drawn Animated External / Open Icon */}
                               <div className="w-6 h-6 rounded-md bg-neutral-950 text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                                <svg className="w-3.5 h-3.5 text-white group-hover:translate-y-0.5 transition-transform" viewBox="0 0 24 24" fill="none">
-                                  <path d="M12 4V16M12 16L7 11M12 16L17 11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                                  <path d="M4 20H20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                                <svg className="w-3.5 h-3.5 text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M7 17L17 7M17 7H7M17 7V17" />
                                 </svg>
                               </div>
                             </div>
