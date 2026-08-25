@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface WelcomeIntroProps {
   onComplete?: () => void;
@@ -87,6 +90,9 @@ export const WelcomeIntro: React.FC<WelcomeIntroProps> = ({ onComplete }) => {
           document.body.style.overflow = '';
           setPhase('done');
           if (onComplete) onComplete();
+          setTimeout(() => {
+            ScrollTrigger.refresh();
+          }, 150);
         },
       });
 
@@ -142,6 +148,9 @@ export const WelcomeIntro: React.FC<WelcomeIntroProps> = ({ onComplete }) => {
     document.body.style.overflow = '';
     setPhase('done');
     if (onComplete) onComplete();
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 150);
   };
 
   if (phase === 'done') return null;

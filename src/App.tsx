@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import { BackgroundVideo } from './components/BackgroundVideo';
 import { Navbar } from './components/Navbar';
@@ -12,10 +14,32 @@ import { Timeline } from './components/Timeline';
 import { Achievements } from './components/Achievements';
 import { WelcomeIntro } from './components/WelcomeIntro';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export const App: React.FC = () => {
   // Initialize Lenis smooth scroll engine
   useSmoothScroll();
   const [introReady, setIntroReady] = useState(false);
+
+  useEffect(() => {
+    // Refresh ScrollTrigger when intro completes or fonts finish loading
+    const handleRefresh = () => {
+      ScrollTrigger.refresh();
+    };
+
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(handleRefresh);
+    }
+    window.addEventListener('load', handleRefresh);
+
+    if (introReady) {
+      handleRefresh();
+    }
+
+    return () => {
+      window.removeEventListener('load', handleRefresh);
+    };
+  }, [introReady]);
 
   return (
     <main className="relative min-h-screen w-full select-none bg-[#fafaf9] overflow-x-hidden">
