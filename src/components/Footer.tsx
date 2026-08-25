@@ -1,7 +1,10 @@
 "use client";
 
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import React, { useEffect, useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface CrowdCanvasProps {
   src?: string;
@@ -37,8 +40,6 @@ const CrowdCanvas: React.FC<CrowdCanvasProps> = ({
       min + Math.random() * (max - min);
     const randomIndex = (array: any[]) => randomRange(0, array.length) | 0;
     const removeFromArray = (array: any[], i: number) => array.splice(i, 1)[0];
-    const removeItemFromArray = (array: any[], item: any) =>
-      removeFromArray(array, array.indexOf(item));
     const removeRandomFromArray = (array: any[]) =>
       removeFromArray(array, randomIndex(array));
     const getRandomFromArray = (array: any[]) => array[randomIndex(array) | 0];
@@ -103,7 +104,7 @@ const CrowdCanvas: React.FC<CrowdCanvasProps> = ({
         peep,
         {
           duration: yDuration,
-          repeat: Math.floor(xDuration / yDuration),
+          repeat: xDuration / yDuration,
           yoyo: true,
           y: startY - stepBounce,
           ease: "power1.inOut",
@@ -116,76 +117,62 @@ const CrowdCanvas: React.FC<CrowdCanvasProps> = ({
 
     const walks = [normalWalk];
 
-    // TYPES
-    type Peep = {
+    // CLASSES
+    class Peep {
       image: HTMLImageElement;
-      rect: number[];
-      width: number;
-      height: number;
-      drawArgs: any[];
-      x: number;
-      y: number;
-      anchorY: number;
-      scaleX: number;
-      scaleY: number;
-      depth: number;
-      walk: any;
-      setRect: (rect: number[]) => void;
-      render: (ctx: CanvasRenderingContext2D) => void;
-    };
+      x = 0;
+      y = 0;
+      anchorY = 0;
+      scaleX = 1;
+      scaleY = 1;
+      height = 0;
+      width = 0;
+      depth = 0;
+      walk: any = null;
+      rect: number[] = [];
 
-    // FACTORY FUNCTIONS
-    const createPeep = ({
-      image,
-      rect,
-    }: {
-      image: HTMLImageElement;
-      rect: number[];
-    }): Peep => {
-      const peep: Peep = {
+      constructor({
         image,
-        rect: [],
-        width: 0,
-        height: 0,
-        drawArgs: [],
-        x: 0,
-        y: 0,
-        anchorY: 0,
-        scaleX: config.zoom,
-        scaleY: config.zoom,
-        depth: 0,
-        walk: null,
-        setRect: (rect: number[]) => {
-          peep.rect = rect;
-          peep.width = rect[2];
-          peep.height = rect[3];
-          peep.drawArgs = [peep.image, ...rect, 0, 0, peep.width, peep.height];
-        },
-        render: (ctx: CanvasRenderingContext2D) => {
-          ctx.save();
-          ctx.translate(peep.x, peep.y);
-          ctx.scale(peep.scaleX, peep.scaleY);
-          ctx.drawImage(
-            peep.image,
-            peep.rect[0],
-            peep.rect[1],
-            peep.rect[2],
-            peep.rect[3],
-            0,
-            0,
-            peep.width,
-            peep.height
-          );
-          ctx.restore();
-        },
-      };
+        rect,
+      }: {
+        image: HTMLImageElement;
+        rect: number[];
+      }) {
+        this.image = image;
+        this.setRect(rect);
+      }
 
-      peep.setRect(rect);
-      return peep;
-    };
+      setRect(rect: number[]) {
+        this.rect = rect;
+        this.width = rect[2];
+        this.height = rect[3];
+      }
 
+      render(ctx: CanvasRenderingContext2D) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.scale(this.scaleX, this.scaleY);
+        ctx.drawImage(
+          this.image,
+          this.rect[0],
+          this.rect[1],
+          this.rect[2],
+          this.rect[3],
+          0,
+          0,
+          this.width,
+          this.height
+        );
+        ctx.restore();
+      }
+    }
+
+    // MAIN
     const img = document.createElement("img");
     img.crossOrigin = "anonymous";
+    img.onload = init;
+    img.src = config.src;
+
     const stage = {
       width: 0,
       height: 0,
@@ -195,7 +182,7 @@ const CrowdCanvas: React.FC<CrowdCanvasProps> = ({
     const availablePeeps: Peep[] = [];
     const crowd: Peep[] = [];
 
-    const createPeeps = () => {
+    function createPeeps() {
       allPeeps.length = 0;
       const { rows, cols } = config;
       const { naturalWidth: width, naturalHeight: height } = img;
@@ -205,7 +192,7 @@ const CrowdCanvas: React.FC<CrowdCanvasProps> = ({
 
       for (let i = 0; i < total; i++) {
         allPeeps.push(
-          createPeep({
+          new Peep({
             image: img,
             rect: [
               (i % rows) * rectWidth,
@@ -216,65 +203,14 @@ const CrowdCanvas: React.FC<CrowdCanvasProps> = ({
           })
         );
       }
-    };
+    }
 
-    const addPeepToCrowd = () => {
-      if (!availablePeeps.length) return null;
-      const peep = removeRandomFromArray(availablePeeps);
-      const walk = getRandomFromArray(walks)({
-        peep,
-        props: resetPeep({
-          peep,
-          stage,
-        }),
-      }).eventCallback("onComplete", () => {
-        removePeepFromCrowd(peep);
-        addPeepToCrowd();
-      });
-
-      peep.walk = walk;
-      crowd.push(peep);
-      crowd.sort((a, b) => a.anchorY - b.anchorY);
-
-      return peep;
-    };
-
-    const initCrowd = () => {
-      while (availablePeeps.length) {
-        const peep = addPeepToCrowd();
-        if (peep && peep.walk) {
-          peep.walk.progress(Math.random());
-        }
-      }
-    };
-
-    const removePeepFromCrowd = (peep: Peep) => {
-      removeItemFromArray(crowd, peep);
-      availablePeeps.push(peep);
-    };
-
-    const render = () => {
+    function resize() {
       if (!canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
-
-      crowd.forEach((peep) => {
-        peep.render(ctx);
-      });
-
-      ctx.restore();
-    };
-
-    let isInitialized = false;
-
-    const resize = () => {
-      if (!canvas) return;
-      const dpr = window.devicePixelRatio || 1;
-      stage.width = canvas.clientWidth || window.innerWidth;
-      stage.height = canvas.clientHeight || 400;
-      canvas.width = stage.width * dpr;
-      canvas.height = stage.height * dpr;
+      stage.width = canvas.clientWidth;
+      stage.height = canvas.clientHeight;
+      canvas.width = stage.width * (window.devicePixelRatio || 1);
+      canvas.height = stage.height * (window.devicePixelRatio || 1);
 
       crowd.forEach((peep) => {
         if (peep.walk) peep.walk.kill();
@@ -285,28 +221,58 @@ const CrowdCanvas: React.FC<CrowdCanvasProps> = ({
       availablePeeps.push(...allPeeps);
 
       initCrowd();
-    };
+    }
 
-    const init = () => {
-      if (isInitialized) return;
-      isInitialized = true;
+    function initCrowd() {
+      while (availablePeeps.length) {
+        addPeepToCrowd().walk.progress(Math.random());
+      }
+    }
+
+    function addPeepToCrowd() {
+      const peep = removeRandomFromArray(availablePeeps);
+      const walk = getRandomFromArray(walks)({
+        peep,
+        props: resetPeep({
+          peep,
+          stage,
+        }),
+      }).eventCallback("onComplete", () => {
+        removeFromArray(crowd, crowd.indexOf(peep));
+        availablePeeps.push(peep);
+        addPeepToCrowd();
+      });
+
+      peep.walk = walk;
+      crowd.push(peep);
+      crowd.sort((a, b) => a.anchorY - b.anchorY);
+
+      return peep;
+    }
+
+    function render() {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+
+      crowd.forEach((peep) => {
+        peep.render(ctx);
+      });
+
+      ctx.restore();
+    }
+
+    function init() {
       createPeeps();
       resize();
       gsap.ticker.add(render);
-    };
-
-    img.onload = init;
-    img.src = config.src;
-
-    if (img.complete && img.naturalWidth > 0) {
-      init();
     }
 
-    const handleResize = () => resize();
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", resize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", resize);
       gsap.ticker.remove(render);
       crowd.forEach((peep) => {
         if (peep.walk) peep.walk.kill();
@@ -317,106 +283,169 @@ const CrowdCanvas: React.FC<CrowdCanvasProps> = ({
   return (
     <canvas
       ref={canvasRef}
-      className="absolute bottom-0 left-0 w-full h-[40vh] sm:h-[50vh] md:h-[55vh] pointer-events-none z-0"
+      className="absolute bottom-0 left-0 w-full h-[40vh] sm:h-[50vh] md:h-[55vh] pointer-events-none z-20"
     />
   );
 };
 
 export const Footer: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const tlRef = useRef<gsap.core.Timeline | null>(null);
-
-  // 3-line format for animated headline
-  const lines = ["Thanks", "for", "visiting."];
+  const line0Ref = useRef<HTMLDivElement>(null);
+  const line1Ref = useRef<HTMLDivElement>(null);
+  const line2Ref = useRef<HTMLDivElement>(null);
+  const noteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const chars = titleRef.current?.querySelectorAll(".char-item");
-    const tl = gsap.timeline({ paused: true });
-
-    if (chars && chars.length > 0) {
-      tl.fromTo(
-        chars,
-        {
-          yPercent: 130,
-          rotateX: 55,
-          opacity: 0,
-          filter: "blur(8px)",
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top center",
+          end: "center center",
+          scrub: 1.2,
+          invalidateOnRefresh: true,
         },
-        {
-          yPercent: 0,
-          rotateX: 0,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: 0.9,
-          stagger: 0.03,
-          ease: "power4.out",
-        }
-      );
-    }
+      });
 
-    tlRef.current = tl;
-
-    // IntersectionObserver to re-trigger text animation whenever footer enters viewport
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            tl.restart();
-          }
-        });
-      },
-      {
-        threshold: 0.25,
+      if (line0Ref.current) {
+        tl.fromTo(
+          line0Ref.current,
+          {
+            x: () => -window.innerWidth * 0.85,
+            rotate: -14,
+            opacity: 0,
+            scale: 0,
+          },
+          {
+            x: 0,
+            rotate: 0,
+            opacity: 1,
+            scale: 1,
+            ease: "power2.out",
+          },
+          0
+        );
       }
-    );
 
-    observer.observe(section);
+      if (line1Ref.current) {
+        tl.fromTo(
+          line1Ref.current,
+          {
+            rotate: 14,
+            opacity: 0,
+            scale: 0,
+          },
+          {
+            x: 0,
+            rotate: 0,
+            opacity: 1,
+            scale: 1,
+            ease: "power2.out",
+          },
+          0.1
+        );
+      }
 
-    return () => {
-      observer.disconnect();
-      tl.kill();
-    };
+      if (line2Ref.current) {
+        tl.fromTo(
+          line2Ref.current,
+          {
+            x: () => window.innerWidth * 0.85,
+            rotate: -10,
+            opacity: 0,
+            scale: 0,
+          },
+          {
+            x: 0,
+            rotate: 0,
+            opacity: 1,
+            scale: 1,
+            ease: "power2.out",
+          },
+          0.2
+        );
+      }
+
+      if (noteRef.current) {
+        tl.fromTo(
+          noteRef.current,
+          {
+            y: 40,
+            opacity: 0,
+            scale: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            ease: "power2.out",
+          },
+          0.32
+        );
+      }
+    }, section);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <footer
       id="contact"
       ref={sectionRef}
-      className="relative min-h-screen w-full tactile-menu-bg text-black flex flex-col justify-center items-center overflow-hidden z-10 select-none px-6 sm:px-10 border-t border-[#1c1917]/15"
+      className="relative min-h-screen w-full flex flex-col justify-center items-center overflow-hidden z-10 select-none px-4 sm:px-8 md:px-12 border-t border-[#1c1917]/15"
       style={{ fontFamily: "var(--font-heading)" }}
     >
-      {/* 3-Line Centered GSAP Animated Text Reveal */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto text-center flex flex-col items-center justify-center -translate-y-8 sm:-translate-y-12">
-        <h2
-          ref={titleRef}
-          className="flex flex-col items-center justify-center text-[54px] sm:text-[88px] md:text-[120px] lg:text-[144px] leading-[0.92] tracking-tight font-bold text-black"
-          style={{
-            perspective: "1000px",
-          }}
-        >
-          {lines.map((line, lineIndex) => (
-            <div
-              key={lineIndex}
-              className="inline-block whitespace-nowrap overflow-visible leading-[0.92] my-0.5 sm:my-1"
-            >
-              {line.split("").map((char, charIndex) => (
-                <span
-                  key={charIndex}
-                  className="char-item inline-block transform-gpu will-change-transform"
-                >
-                  {char}
-                </span>
-              ))}
-            </div>
-          ))}
-        </h2>
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
+        <img
+          src="/images/page.webp"
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover select-none pointer-events-none"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(235,225,210,0.35)_100%)] pointer-events-none" />
       </div>
 
-      {/* Zoomed Out Walking Crowd Canvas */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto text-center flex flex-col items-center justify-center -translate-y-8 sm:-translate-y-12 overflow-visible pointer-events-none">
+        <h2
+          className="flex flex-col items-center justify-center text-[54px] sm:text-[88px] md:text-[120px] lg:text-[144px] leading-[0.94] tracking-normal font-bold text-[#1c1917]"
+          style={{
+            fontFamily: "var(--font-sketch)",
+          }}
+        >
+          <div
+            ref={line0Ref}
+            className="inline-block whitespace-nowrap overflow-visible leading-[0.94] my-0.5 sm:my-1 will-change-transform"
+          >
+            Thanks
+          </div>
+
+          <div
+            ref={line1Ref}
+            className="inline-block whitespace-nowrap overflow-visible leading-[0.94] my-0.5 sm:my-1 will-change-transform"
+          >
+            for
+          </div>
+
+          <div
+            ref={line2Ref}
+            className="inline-block whitespace-nowrap overflow-visible leading-[0.94] my-0.5 sm:my-1 will-change-transform"
+          >
+            visiting.
+          </div>
+        </h2>
+
+        <div
+          ref={noteRef}
+          className="mt-4 sm:mt-6 text-[#6b4c30]/90 text-sm sm:text-base md:text-lg font-semibold tracking-wider will-change-transform"
+          style={{ fontFamily: "var(--font-kalam)" }}
+        >
+          ✦ Crafted with care by Pratham Petwal · 2026
+        </div>
+      </div>
+
       <CrowdCanvas src="/images/peeps/all-peeps.png" rows={15} cols={7} zoom={0.34} />
     </footer>
   );

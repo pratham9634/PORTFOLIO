@@ -65,6 +65,7 @@ const SKILL_CATEGORIES: SkillCategory[] = [
       "CSS3",
       "Responsive UI",
       "State Management",
+      "Redux"
     ],
     gradient: "from-amber-100/90 via-orange-50/70 to-amber-50/40 border-amber-200/80",
     badgeClass: "bg-amber-50/80 text-amber-950 border-amber-200/90 hover:bg-neutral-950 hover:text-white hover:border-neutral-950 hover:shadow-md",
@@ -90,6 +91,7 @@ const SKILL_CATEGORIES: SkillCategory[] = [
       "JWT Authentication",
       "API Integration",
       "RabbitMQ",
+      "Redis"
     ],
     gradient: "from-emerald-100/90 via-teal-50/70 to-emerald-50/40 border-emerald-200/80",
     badgeClass: "bg-emerald-50/80 text-emerald-950 border-emerald-200/90 hover:bg-neutral-950 hover:text-white hover:border-neutral-950 hover:shadow-md",

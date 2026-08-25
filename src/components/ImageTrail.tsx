@@ -412,16 +412,27 @@ export interface ImageTrailProps {
 export const DEFAULT_TECH_IMAGES = [
   "/icons/react.svg",
   "/icons/typescript.svg",
+  "/icons/javascript.svg",
   "/icons/nextjs.svg",
   "/icons/python.svg",
   "/icons/nodejs.svg",
+  "/icons/tailwind.svg",
+  "/icons/html5.svg",
+  "/icons/css3.svg",
   "/icons/docker.svg",
   "/icons/postgresql.svg",
+  "/icons/mongodb.svg",
+  "/icons/redis.svg",
+  "/icons/graphql.svg",
+  "/icons/vite.svg",
+  "/icons/figma.svg",
+  "/icons/redux.svg",
+  "/icons/supabase.svg",
+  "/icons/openai.svg",
+  "/icons/cplusplus.svg",
+  "/icons/fastapi.svg",
   "/icons/aws.svg",
   "/icons/git.svg",
-  "/icons/fastapi.svg",
-  "/icons/tailwind.svg",
-  "/icons/mongodb.svg",
 ];
 
 export default function ImageTrail({
@@ -450,11 +461,11 @@ export default function ImageTrail({
     >
       {items.map((url, i) => (
         <div
-          className={`content__img w-[90px] h-[90px] sm:w-[110px] sm:h-[110px] rounded-[22px] absolute top-0 left-0 opacity-0 overflow-hidden [will-change:transform,filter] pointer-events-none bg-white/95 p-3.5 border border-black/10 shadow-[0_16px_36px_-6px_rgba(0,0,0,0.18),0_0_0_1px_rgba(0,0,0,0.04)] backdrop-blur-xl flex items-center justify-center ${itemClassName}`}
+          className={`content__img w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] absolute top-0 left-0 opacity-0 overflow-visible [will-change:transform,filter] pointer-events-none bg-transparent p-0 border-none shadow-none flex items-center justify-center ${itemClassName}`}
           key={i}
         >
           <div
-            className="content__img-inner bg-center bg-no-repeat bg-contain w-full h-full"
+            className="content__img-inner bg-center bg-no-repeat bg-contain w-full h-full filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.22)]"
             style={{ backgroundImage: `url(${url})` }}
           />
         </div>
