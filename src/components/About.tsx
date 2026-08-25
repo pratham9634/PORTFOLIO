@@ -198,7 +198,7 @@ export const About: React.FC<AboutProps> = ({ data: userOverrides }) => {
   return (
     <section
       id="about"
-      className="relative w-full min-h-screen py-20 sm:py-28 md:py-32 px-5 sm:px-8 md:px-12 lg:px-16 tactile-menu-bg text-neutral-900 flex flex-col items-center justify-center overflow-hidden z-10 select-none border-t border-[#1c1917]/15"
+      className="relative w-full min-h-screen py-20 sm:py-28 md:py-32 px-5 sm:px-8 md:px-12 lg:px-16 tactile-menu-bg text-neutral-900 flex flex-col items-center justify-center overflow-hidden z-10 select-none border-none"
     >
       {/* Background Ambient Warm Glows & Studio Desk Aesthetics */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(242,236,226,0.85)_0%,rgba(250,247,242,1)_100%)] pointer-events-none" />
@@ -670,7 +670,38 @@ export const About: React.FC<AboutProps> = ({ data: userOverrides }) => {
                     </div>
 
                     {/* Tactile Audio Player + Headphone Listener Badge */}
-                    <div className="relative group select-none">
+                    <div className="relative group select-none flex items-center">
+                      {/* Hand-drawn Play Callout Below Button with Upward Curly Arrow */}
+                      <div className="absolute -bottom-10 left-24 sm:left-32  scale-150 flex items-center gap-1.5 text-[#7c3b0a] select-none pointer-events-none transform -rotate-3 transition-all duration-300 z-20">
+                        {/* Hand-drawn Upward-pointing Curly Arrow */}
+                        <svg
+                          viewBox="0 0 32 40"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-5 sm:w-5.5 h-auto text-[#7c3b0a] stroke-current transform -translate-y-0.5 animate-bounce [animation-duration:2.5s]"
+                        >
+                          {/* Upward Arrowhead */}
+                          <path
+                            d="M 8 10 L 16 3 L 24 10"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          {/* Curly stem swooping upward from bottom */}
+                          <path
+                            d="M 12 36 C 6 30, 8 20, 20 22 C 26 23, 27 16, 22 13 C 18 10, 16 7, 16 4"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <span
+                          className="text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap drop-shadow-xs"
+                          style={{ fontFamily: "var(--font-hand)" }}
+                        >
+                          {isPlaying ? "playing! 🎵" : "play me!"}
+                        </span>
+                      </div>
+
                       {/* Washi Tape Badge on Top Edge */}
                       <div className="absolute -top-2 left-3 z-10 w-14 h-3 washi-tape opacity-90 -rotate-3 pointer-events-none" />
 

@@ -13,11 +13,13 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ ready = true }) => {
   const sectionRef = useRef<HTMLElement>(null);
+  const whitesmokeBgRef = useRef<HTMLDivElement>(null);
   const paperWrapRef = useRef<HTMLDivElement>(null);
 
   // Text overlay refs
   const greetRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
+  const planeRef = useRef<HTMLDivElement>(null);
   const roleRef = useRef<HTMLDivElement>(null);
   const dividerRef = useRef<HTMLDivElement>(null);
   const thoughtRef = useRef<HTMLDivElement>(null);
@@ -110,6 +112,29 @@ export const Hero: React.FC<HeroProps> = ({ ready = true }) => {
         );
       }
 
+      // ── Paperplane entrance ──
+      if (planeRef.current) {
+        gsap.fromTo(
+          planeRef.current,
+          { scale: 0.65, opacity: 0, x: 30, y: -10, rotate: -15 },
+          {
+            scale: 2,
+            opacity: 1,
+            x: 0,
+            y: 0,
+            rotate: 0,
+            duration: 1.4,
+            ease: spring,
+            delay: 0.48,
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 86%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+      }
+
       // ── Role badge ──
       if (roleRef.current) {
         gsap.fromTo(
@@ -192,6 +217,66 @@ export const Hero: React.FC<HeroProps> = ({ ready = true }) => {
           }
         );
       }
+
+      // ── Scroll-Driven Pinning & Card Centering ──
+      const scrollTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: '+=100%',
+          pin: true,
+          scrub: 1.0,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // 1. Move paper card to horizontal dead-center simultaneously
+      scrollTl.to(
+        paperWrapRef.current,
+        {
+          x: () => {
+            if (!paperWrapRef.current) return 0;
+            const rect = paperWrapRef.current.getBoundingClientRect();
+            const currentX = (gsap.getProperty(paperWrapRef.current, 'x') as number) || 0;
+            const initialLeft = rect.left - currentX;
+            const targetLeft = (window.innerWidth - rect.width) / 2;
+            return targetLeft - initialLeft;
+          },
+          scale: 1.05,
+          rotate: 0,
+          duration: 1,
+          ease: 'power1.inOut',
+        },
+        0
+      );
+
+      // 2. Spread About-matching background simultaneously from outer screen edge-to-edge
+      if (whitesmokeBgRef.current) {
+        scrollTl.to(
+          whitesmokeBgRef.current,
+          {
+            opacity: 1,
+            duration: 1,
+            ease: 'power1.inOut',
+          },
+          0
+        );
+      }
+
+      // 3. Ambient depth scaling on paperplane simultaneously
+      if (planeRef.current) {
+        scrollTl.to(
+          planeRef.current,
+          {
+            scale: 1.85,
+            y: -6,
+            duration: 1,
+            ease: 'power1.inOut',
+          },
+          0
+        );
+      }
     }, section);
 
     return () => ctx.revert();
@@ -213,21 +298,30 @@ export const Hero: React.FC<HeroProps> = ({ ready = true }) => {
     <section
       id="hero"
       ref={sectionRef}
-      className="relative min-h-screen w-full z-[1] flex items-center overflow-hidden select-none"
+      className="relative min-h-screen w-full z-[1] flex items-center justify-center overflow-hidden select-none border-none outline-none"
     >
+      {/* ── Full-screen background covering the entire viewport matching About section's tactile sketchbook style ── */}
+      <div
+        ref={whitesmokeBgRef}
+        className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-0 tactile-menu-bg will-change-[opacity] border-none"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(242,236,226,0.85)_0%,rgba(250,247,242,1)_100%)] pointer-events-none" />
+      </div>
+
       {/* ══════════════════════════════════════════════════════
-          LAYOUT — Left half: paper + all text overlay on it
+          LAYOUT — Full-width Container (Edge-to-Edge, Borderless)
+                   Left half: paper + all text overlay on it
                    Right half: empty (video shows through)
       ══════════════════════════════════════════════════════ */}
-      <div className="w-full h-screen flex items-center px-6 sm:px-10 md:px-14 lg:px-16 pt-20">
-
+      <div
+        className="relative z-10 w-full h-screen flex items-center px-6 sm:px-10 md:px-14 lg:px-16 pt-20 border-none outline-none"
+      >
         {/* ── Paper block + all text ON TOP of it ── */}
         <div
           ref={paperWrapRef}
           className="group relative w-full max-w-[520px] xl:max-w-[560px] flex-shrink-0 cursor-pointer will-change-transform"
           style={{
             opacity: 0,
-            transition: 'transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease',
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.045) translateY(-6px) rotate(0.4deg)';
@@ -327,31 +421,48 @@ export const Hero: React.FC<HeroProps> = ({ ready = true }) => {
                 </span>
               </div>
 
-              {/* Big name ON paper */}
-              <div
-                ref={nameRef}
-                className="overflow-visible leading-none"
-                aria-label="Pratham Petwal"
-              >
-                <div className="overflow-hidden">
-                  <span
-                    className="block text-[#1a0f09] text-[40px] sm:text-[52px] md:text-[60px] font-bold leading-[0.95] tracking-[-0.01em]"
-                    style={{ fontFamily: 'var(--font-hand)' }}
-                  >
-                    {splitChars('Pratham')}
-                  </span>
+              {/* Name + Paperplane Row */}
+              <div className="relative flex items-center justify-between gap-1 sm:gap-2">
+                {/* Big name ON paper */}
+                <div
+                  ref={nameRef}
+                  className="overflow-visible leading-none flex-1 min-w-0"
+                  aria-label="Pratham Petwal"
+                >
+                  <div className="overflow-hidden">
+                    <span
+                      className="block text-[#1a0f09] text-[40px] sm:text-[52px] md:text-[60px] font-bold leading-[0.95] tracking-[-0.01em]"
+                      style={{ fontFamily: 'var(--font-hand)' }}
+                    >
+                      {splitChars('Pratham')}
+                    </span>
+                  </div>
+                  <div className="overflow-hidden">
+                    <span
+                      className="block text-[40px] sm:text-[52px] md:text-[60px] font-bold leading-[0.95] tracking-[-0.01em]"
+                      style={{
+                        fontFamily: 'var(--font-hand)',
+                        color: 'transparent',
+                        WebkitTextStroke: '1.5px rgba(60,30,10,0.55)',
+                      }}
+                    >
+                      {splitChars('Petwal')}
+                    </span>
+                  </div>
                 </div>
-                <div className="overflow-hidden">
-                  <span
-                    className="block text-[40px] sm:text-[52px] md:text-[60px] font-bold leading-[0.95] tracking-[-0.01em]"
-                    style={{
-                      fontFamily: 'var(--font-hand)',
-                      color: 'transparent',
-                      WebkitTextStroke: '1.5px rgba(60,30,10,0.55)',
-                    }}
-                  >
-                    {splitChars('Petwal')}
-                  </span>
+
+                {/* Animated Paperplane SVG */}
+                <div
+                  ref={planeRef}
+                  className="relative flex-shrink-0 w-24 h-24 sm:w-32 sm:h-28 md:w-36 md:h-32 -mr-1 sm:-mr-3 -mt-1 select-none pointer-events-none"
+                  style={{ opacity: 0 }}
+                  title="Flying Paperplane"
+                >
+                  <img
+                    src="/Loading%2040%20_%20Paperplane.svg"
+                    alt="Paperplane"
+                    className="w-full h-full object-contain filter drop-shadow-sm"
+                  />
                 </div>
               </div>
 
@@ -401,6 +512,8 @@ export const Hero: React.FC<HeroProps> = ({ ready = true }) => {
                 >
                   ✦
                 </span>
+
+               
               </div>
 
               {/* Visionary thought */}

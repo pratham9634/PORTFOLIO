@@ -10,16 +10,15 @@ export const useSmoothScroll = () => {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Initialize Lenis with luxury fluid momentum parameters
+    // Initialize Lenis with luxury Awwwards-tier fluid momentum (Lerp physics)
     const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
+      lerp: 0.085, // Silky linear interpolation damping for seamless momentum
+      wheelMultiplier: 0.95, // Softens mechanical mouse wheel steps
+      touchMultiplier: 1.0, // Preserves natural responsive touch on mobile
       smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
-      infinite: false,
+      syncTouch: false, // Ensures mobile devices keep native fluid gesture response
+      autoResize: true,
+      prevent: (node) => node.classList?.contains('lenis-prevent') || false,
     });
 
     lenisRef.current = lenis;
@@ -46,8 +45,8 @@ export const useSmoothScroll = () => {
           if (targetEl) {
             e.preventDefault();
             lenis.scrollTo(targetEl as HTMLElement, {
-              offset: 0,
-              duration: 1.4,
+              offset: -10,
+              duration: 1.5,
               easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             });
           }

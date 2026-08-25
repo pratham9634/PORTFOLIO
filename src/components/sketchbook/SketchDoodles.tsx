@@ -112,7 +112,7 @@ export const PencilDoodle: React.FC<{ className?: string }> = ({ className = '' 
     viewBox="0 0 160 50"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className={`w-36 h-12 text-neutral-800 pointer-events-none select-none ${className}`}
+    className={`w-72 h-24 text-neutral-800 pointer-events-none select-none ${className}`}
   >
     {/* Pencil Body Shaft */}
     <path
