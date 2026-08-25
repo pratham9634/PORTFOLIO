@@ -303,9 +303,9 @@ export const Footer: React.FC = () => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: "top center",
-          end: "center center",
-          scrub: 1.2,
+          start: "top 85%",
+          end: "bottom bottom",
+          scrub: 1,
           invalidateOnRefresh: true,
         },
       });
@@ -314,10 +314,10 @@ export const Footer: React.FC = () => {
         tl.fromTo(
           line0Ref.current,
           {
-            x: () => -window.innerWidth * 0.85,
+            x: () => -Math.min(window.innerWidth * 0.6, 350),
             rotate: -14,
             opacity: 0,
-            scale: 0,
+            scale: 0.4,
           },
           {
             x: 0,
@@ -334,18 +334,21 @@ export const Footer: React.FC = () => {
         tl.fromTo(
           line1Ref.current,
           {
+            x: 0,
+            y: 0,
             rotate: 14,
             opacity: 0,
-            scale: 0,
+            scale: 0.4,
           },
           {
             x: 0,
+            y: 0,
             rotate: 0,
             opacity: 1,
             scale: 1,
             ease: "power2.out",
           },
-          0.1
+          0.08
         );
       }
 
@@ -353,10 +356,10 @@ export const Footer: React.FC = () => {
         tl.fromTo(
           line2Ref.current,
           {
-            x: () => window.innerWidth * 0.85,
+            x: () => Math.min(window.innerWidth * 0.6, 350),
             rotate: -10,
             opacity: 0,
-            scale: 0,
+            scale: 0.4,
           },
           {
             x: 0,
@@ -365,7 +368,7 @@ export const Footer: React.FC = () => {
             scale: 1,
             ease: "power2.out",
           },
-          0.2
+          0.16
         );
       }
 
@@ -373,9 +376,9 @@ export const Footer: React.FC = () => {
         tl.fromTo(
           noteRef.current,
           {
-            y: 40,
+            y: 30,
             opacity: 0,
-            scale: 0,
+            scale: 0.6,
           },
           {
             y: 0,
@@ -383,17 +386,25 @@ export const Footer: React.FC = () => {
             scale: 1,
             ease: "power2.out",
           },
-          0.32
+          0.24
         );
       }
     }, section);
 
-    return () => ctx.revert();
+    // Refresh ScrollTrigger to ensure correct offsets after layout renders
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 400);
+
+    return () => {
+      clearTimeout(refreshTimer);
+      ctx.revert();
+    };
   }, []);
 
   return (
     <footer
-      id="contact"
+      id="footer"
       ref={sectionRef}
       className="relative min-h-screen w-full flex flex-col justify-center items-center overflow-hidden z-10 select-none px-4 sm:px-8 md:px-12 border-t border-[#1c1917]/15"
       style={{ fontFamily: "var(--font-heading)" }}
