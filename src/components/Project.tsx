@@ -83,7 +83,7 @@ const Project: React.FC = () => {
     <section
       ref={sectionRef}
       id="projects"
-      className="relative w-full min-h-[920px] h-screen tactile-menu-bg flex flex-col justify-between overflow-hidden select-none border-y border-[#1c1917]/15"
+      className="relative w-full min-h-[1020px] h-screen tactile-menu-bg flex flex-col select-none border-y border-[#1c1917]/15"
     >
       {/* Background Subtle Sketch Grid & Light Paper Texture Grain */}
       <div 
@@ -123,7 +123,7 @@ const Project: React.FC = () => {
       </div>
 
       {/* 3D Bookshelf Canvas Area */}
-      <div className="relative flex-1 w-full h-full min-h-[620px] overflow-hidden">
+      <div className="relative flex-1 w-full h-0 min-h-0">
         <CompleteShelfLandingPage
           headingFont="geist"
           bodyFont="inter"

@@ -421,16 +421,11 @@
     .detail-panel {
       position: absolute;
       top: 10%;
-      bottom: 10%;
       right: clamp(32px, 5vw, 96px);
       z-index: 9;
       width: min(42vw, 500px);
-      max-height: 82vh;
       padding: clamp(24px, 3vw, 38px);
-      overflow-y: auto;
-      overflow-x: hidden;
-      scrollbar-width: none; /* Firefox: hide scrollbar */
-      -ms-overflow-style: none; /* IE/Edge: hide scrollbar */
+      overflow: visible;
       border: 1.5px solid #2b251f;
       border-radius: 18px;
       background:
@@ -444,12 +439,6 @@
       transition: opacity 620ms var(--ease-out), transform 620ms var(--ease-out);
       pointer-events: none;
       backdrop-filter: blur(16px);
-    }
-
-    .detail-panel::-webkit-scrollbar {
-      display: none; /* Chrome/Safari: hide scrollbar */
-      width: 0;
-      height: 0;
     }
 
     .detail-panel::before {
@@ -526,7 +515,6 @@
       font-size: clamp(0.95rem, 1.2vw, 1.1rem);
       line-height: 1.6;
       color: #3b3127;
-    }
       margin: 22px 0 0;
       font-size: clamp(1rem, 1.35vw, 1.22rem);
       line-height: 1.55;
@@ -820,7 +808,6 @@
         bottom: 24px;
         left: 24px;
         width: auto;
-        max-height: 42vh;
         padding: 24px;
       }
 
@@ -907,7 +894,6 @@
         right: 12px;
         bottom: 12px;
         left: 12px;
-        max-height: 44vh;
       }
 
       .meta-list {
@@ -1075,7 +1061,6 @@
       bottom: auto;
       left: auto;
       width: min(32vw, 390px);
-      max-height: 76vh;
       padding: 0;
       border: 0;
       background: transparent;
@@ -1083,6 +1068,7 @@
       transform: translateY(calc(-50% + 18px));
       backdrop-filter: none;
       color: var(--ink);
+      overflow: visible;
       transition:
         color 520ms var(--ease-out),
         opacity 620ms var(--ease-out),
@@ -1386,7 +1372,6 @@
       top: 50%;
       right: clamp(34px, 5vw, 78px);
       width: min(34vw, 460px);
-      max-height: 74vh;
       color: var(--ink);
     }
 
@@ -1593,7 +1578,6 @@
         bottom: 22px;
         left: 22px;
         width: auto;
-        max-height: 40vh;
       }
 
       .detail-title {
@@ -1868,13 +1852,41 @@
       <p class="detail-deck" id="detail-deck">
         An interactive online classroom platform with real-time class chat, announcements, and collaborative workspaces.
       </p>
-      <div class="project-action-links" style="display:flex; gap:10px; margin: 12px 0 6px 0;">
-        <a id="detail-live-link" href="#" target="_blank" rel="noopener noreferrer" style="flex:1; text-align:center; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#b85d32; color:#ffffff; font-family:var(--heading); font-weight:700; font-size:13px; padding:10px 14px; border-radius:10px; box-shadow:2px 3px 0px #2b251f; border:1px solid #2b251f; transition:all 0.2s ease;">
-          <span>Live Demo</span> <span style="font-size:14px;">↗</span>
-        </a>
-        <a id="detail-github-link" href="#" target="_blank" rel="noopener noreferrer" style="flex:1; text-align:center; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#fbf9f4; color:#182436; border:1px solid #2b251f; box-shadow:2px 3px 0px #2b251f; font-family:var(--heading); font-weight:700; font-size:13px; padding:10px 14px; border-radius:10px; transition:all 0.2s ease;">
-          <span>GitHub</span> <span style="font-size:14px;">↗</span>
-        </a>
+      <div class="project-action-links" id="project-action-links" style="display:flex; flex-direction:column; gap:8px; margin: 12px 0 6px 0;">
+        <!-- Standard Links Container (for Frontend, Fullstack, AI) -->
+        <div id="standard-action-links" style="display:flex; gap:10px; width:100%;">
+          <!-- Active Live Demo Link -->
+          <a id="detail-live-link" href="#" target="_blank" rel="noopener noreferrer" style="flex:1; text-align:center; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#b85d32; color:#ffffff; font-family:var(--heading); font-weight:700; font-size:13px; padding:10px 14px; border-radius:10px; box-shadow:2px 3px 0px #2b251f; border:1px solid #2b251f; transition:all 0.2s ease;">
+            <span>Live Demo</span> <span style="font-size:14px;">↗</span>
+          </a>
+          <!-- Fallback Badge when no Live Demo link is available -->
+          <div id="detail-demo-fallback" style="flex:1; text-align:center; display:none; align-items:center; justify-content:center; gap:6px; background:#ede7de; color:#78695a; font-family:var(--heading); font-weight:600; font-size:12px; padding:10px 12px; border-radius:10px; border:1.5px dashed #b2a291; cursor:default; user-select:none;">
+            <span style="font-size:13px; opacity:0.9;">⏳</span> <span>Demo In Progress</span>
+          </div>
+
+          <!-- Active GitHub Link -->
+          <a id="detail-github-link" href="#" target="_blank" rel="noopener noreferrer" style="flex:1; text-align:center; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#fbf9f4; color:#182436; border:1px solid #2b251f; box-shadow:2px 3px 0px #2b251f; font-family:var(--heading); font-weight:700; font-size:13px; padding:10px 14px; border-radius:10px; transition:all 0.2s ease;">
+            <span>GitHub</span> <span style="font-size:14px;">↗</span>
+          </a>
+          <!-- Fallback Badge when no GitHub link is available -->
+          <div id="detail-github-fallback" style="flex:1; text-align:center; display:none; align-items:center; justify-content:center; gap:6px; background:#ede7de; color:#78695a; font-family:var(--heading); font-weight:600; font-size:12px; padding:10px 12px; border-radius:10px; border:1.5px dashed #b2a291; cursor:default; user-select:none;">
+            <span style="font-size:13px; opacity:0.9;">🔒</span> <span>Repo Private</span>
+          </div>
+        </div>
+
+        <!-- Upcoming Project Banner (for Upcoming category) -->
+        <div id="upcoming-action-banner" style="display:none; width:100%; padding:11px 14px; border-radius:12px; background:linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border:1.5px solid #d97706; box-shadow:2px 3px 0px #2b251f; gap:10px; align-items:center; box-sizing:border-box;">
+          <div style="width:34px; height:34px; border-radius:8px; background:#d97706; color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; box-shadow:1px 2px 0px #2b251f;">
+            🚀
+          </div>
+          <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-family:var(--heading); font-weight:700; font-size:13px; color:#78350f; letter-spacing:-0.2px;">In Active Development</span>
+              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#d97706; box-shadow:0 0 0 2px rgba(217,119,6,0.35);"></span>
+            </div>
+            <span style="font-family:var(--body); font-size:11.5px; color:#92400e; font-weight:500; line-height:1.3;">Upcoming Work · Demo & Code Releasing Soon</span>
+          </div>
+        </div>
       </div>
       <dl class="meta-list">
         <div>
@@ -2137,19 +2149,101 @@
           techStack: ["React", "CSS3 Grid", "Web Audio API", "State Trees"],
           stats: [{ label: "Physics", value: "3D CSS" }, { label: "State", value: "Deterministic" }, { label: "Response", value: "<16ms" }],
           architecture: "Immutable game state transitions with score validation rules and audio synthesis.",
-          features: ["3D CSS transform rolling physics animation", "Dynamic rule checking and score accumulator", "Audio click & roll cues with volume toggle", "Session high-score saving in LocalStorage"]
+          features: ["3D CSS transform rolling physics animation", "Dynamic rule checking and score accumulator", "Audio click &amp; roll cues with volume toggle", "Session high-score saving in LocalStorage"]
+        },
+        {
+          id: "agency",
+          title: "Agency",
+          roman: "V",
+          category: "frontend",
+          categoryLabel: "Frontend Craft",
+          discipline: "Agency Landing Page",
+          note: "Modern agency showcase with fluid animations and bold visual design.",
+          deck: "A polished agency-style landing page built with React. Features bold typography, smooth scroll-triggered animations, responsive section layouts, and a premium aesthetic suited for creative studios and digital agencies.",
+          binding: "Jet black cloth · neon white foil",
+          format: "148 × 218 mm · interactive edition",
+          theme: "Agency · creative studio showcase",
+          motif: "Dynamic perspective grid",
+          motifKey: "grid",
+          paletteLabel: "Black · white · accent",
+          color: "#09090b",
+          foil: "#71717a",
+          palette: {
+            paper: "#fafafa",
+            paperDeep: "#f4f4f5",
+            paperPale: "#ffffff",
+            ink: "#09090b",
+            inkSoft: "#52525b",
+            wall: "#f5f5f5",
+            shelf: "#8c684d",
+            shelfDark: "#422d1e",
+            light: "#e4e4e7",
+            fill: "#a1a1aa"
+          },
+          width: 0.96,
+          height: 1.52,
+          depth: 0.22,
+          chapters: ["Hero & Identity", "Services & Work", "Scroll Animations"],
+          seed: 105,
+          githubUrl: "https://github.com/pratham9634/agency",
+          liveUrl: "https://agency-beige-psi.vercel.app/",
+          techStack: ["React", "CSS3", "Framer Motion", "Vite"],
+          stats: [{ label: "Design", value: "Agency-Grade" }, { label: "Animations", value: "Scroll-Triggered" }, { label: "Framework", value: "React + Vite" }],
+          architecture: "Component-driven React with scroll-observer hooks and Framer Motion for declarative animation sequences.",
+          features: ["Bold hero section with layered typography and visual hierarchy", "Scroll-triggered entrance animations on all key sections", "Services and portfolio showcase with hover micro-interactions", "Fully responsive layout optimized for all screen sizes"]
         }
       ],
       fullstack: [
         {
-          id: "campus-cart",
-          title: "Campus Cart",
+          id: "api-guard",
+          title: "API Guard",
           roman: "I",
           category: "fullstack",
           categoryLabel: "Full Stack Systems",
-          discipline: "Peer-to-Peer Marketplace",
-          note: "Sustainable campus marketplace with real-time bidding.",
-          deck: "A comprehensive university marketplace designed for college students to buy, sell, and place live bids on textbooks, electronics, and dorm essentials. Features JWT auth, live bid streams, and image pipelines.",
+          discipline: "API Gateway &amp; Key Management",
+          note: "Multi-tenant API gateway with RBAC, JWT auth &amp; real-time analytics.",
+          deck: "Full-stack multi-tenant API gateway built with React, Node.js/Express, MongoDB, PostgreSQL, and RabbitMQ. Provides scalable API key management, RBAC-based tenant isolation on a dual-database architecture, JWT auth, bcrypt hashing, and a real-time analytics dashboard.",
+          binding: "Steel blue cloth · electric gold foil",
+          format: "156 × 230 mm · systems edition",
+          theme: "API Guard · gateway &amp; analytics",
+          motif: "Circuit node grid",
+          motifKey: "grid",
+          paletteLabel: "Steel · gold · slate",
+          color: "#1e40af",
+          foil: "#ca8a04",
+          palette: {
+            paper: "#eff6ff",
+            paperDeep: "#dbeafe",
+            paperPale: "#ffffff",
+            ink: "#172554",
+            inkSoft: "#1d4ed8",
+            wall: "#e8f0fe",
+            shelf: "#8c684d",
+            shelfDark: "#422d1e",
+            light: "#fef9c3",
+            fill: "#bfdbfe"
+          },
+          width: 1.08,
+          height: 1.64,
+          depth: 0.27,
+          chapters: ["Multi-Tenant Gateway", "RBAC &amp; JWT Auth", "RabbitMQ Queues", "Analytics Dashboard"],
+          seed: 204,
+          githubUrl: "https://github.com/pratham9634/api-guard",
+          liveUrl: "https://api-guard-one.vercel.app/",
+          techStack: ["React", "Node.js", "Express", "MongoDB", "PostgreSQL", "RabbitMQ", "JWT", "bcrypt"],
+          stats: [{ label: "Architecture", value: "Multi-Tenant" }, { label: "Auth", value: "JWT + RBAC" }, { label: "Queue", value: "RabbitMQ" }],
+          architecture: "Dual-database architecture: MongoDB for tenant metadata, PostgreSQL for analytics events. RabbitMQ decouples API event processing. RBAC middleware enforces per-tenant isolation at every route.",
+          features: ["Multi-tenant API key provisioning with scoped permissions", "RBAC-based tenant isolation across dual MongoDB + PostgreSQL databases", "JWT authentication with bcrypt-hashed credential storage", "Real-time analytics dashboard showing usage, errors, and latency per key"]
+        },
+        {
+          id: "campus-cart",
+          title: "Campus Cart",
+          roman: "II",
+          category: "fullstack",
+          categoryLabel: "Full Stack Systems",
+          discipline: "College Marketplace Platform",
+          note: "Full-stack student marketplace with real-time bidding &amp; secure auth.",
+          deck: "A college marketplace for students to buy, sell, and bid on second-hand items. Built with Next.js, Node.js, MongoDB, and WebSockets for real-time bid and listing updates. Auth via Clerk, state management via Redux Toolkit, and image delivery via Cloudinary.",
           binding: "Forest cloth · antique copper foil",
           format: "158 × 232 mm · systems edition",
           theme: "Campus Cart · university commerce",
@@ -2173,19 +2267,60 @@
           width: 1.1,
           height: 1.66,
           depth: 0.28,
-          chapters: ["Marketplace Core", "Real-Time Bidding", "Security & Auth"],
+          chapters: ["Marketplace Core", "Real-Time Bidding", "Clerk Auth", "State &amp; Media"],
           seed: 201,
           githubUrl: "https://github.com/pratham9634/CampusCart",
-          liveUrl: "https://campus-cart.vercel.app/",
-          techStack: ["React", "Node.js", "Express", "MongoDB", "JWT", "Cloudinary"],
-          stats: [{ label: "Architecture", value: "MERN Stack" }, { label: "Auth", value: "JWT + Bcrypt" }, { label: "Media", value: "Cloudinary" }],
-          architecture: "RESTful Express micro-services, MongoDB aggregation pipelines, and secure JWT sessions.",
-          features: ["Verified student profile authentication and access control", "Dynamic item listing with multi-image Cloudinary uploads", "Real-time bid ticker with auction auto-expiration", "In-app buyer & seller negotiation message thread"]
+          liveUrl: "",
+          techStack: ["Next.js", "Node.js", "MongoDB", "WebSockets", "Clerk", "Redux Toolkit", "Cloudinary"],
+          stats: [{ label: "Auth", value: "Clerk" }, { label: "Real-Time", value: "WebSockets" }, { label: "Media", value: "Cloudinary" }],
+          architecture: "Next.js frontend with Node.js/MongoDB backend. WebSockets power live bid streams. Redux Toolkit manages global cart and listing state. Clerk handles SSO auth. Cloudinary optimizes image delivery.",
+          features: ["Buy, sell, and bid on second-hand items with real-time bid updates via WebSockets", "Secure authentication and user management via Clerk", "Optimized image uploads and delivery through Cloudinary", "Global state management with Redux Toolkit for cart and listings"]
+        },
+        {
+          id: "knowledge-hub",
+          title: "Knowledge Hub",
+          roman: "III",
+          category: "fullstack",
+          categoryLabel: "Full Stack Systems",
+          discipline: "Personal Knowledge Management",
+          note: "Full-stack PKM platform for files, links, articles &amp; AI-ready search.",
+          deck: "Full-stack personal knowledge management platform built with Next.js, FastAPI, MongoDB, and Supabase. Upload and manage files, images, videos, links, and articles. Secure REST APIs with JWT, debounced search with pagination that reduced API calls by 30%, and a responsive UI with Tailwind CSS, React Query, and shadcn/ui.",
+          binding: "Deep teal cloth · silver foil",
+          format: "152 × 224 mm · systems edition",
+          theme: "Knowledge Hub · personal knowledge base",
+          motif: "Branching knowledge graph",
+          motifKey: "orbits",
+          paletteLabel: "Teal · silver · white",
+          color: "#134e4a",
+          foil: "#0d9488",
+          palette: {
+            paper: "#f0fdfa",
+            paperDeep: "#ccfbf1",
+            paperPale: "#ffffff",
+            ink: "#042f2e",
+            inkSoft: "#0f766e",
+            wall: "#e6f9f6",
+            shelf: "#8c684d",
+            shelfDark: "#422d1e",
+            light: "#ccfbf1",
+            fill: "#99f6e4"
+          },
+          width: 1.02,
+          height: 1.56,
+          depth: 0.24,
+          chapters: ["File &amp; Media Store", "JWT Auth &amp; APIs", "Debounced Search", "shadcn/ui Interface"],
+          seed: 205,
+          githubUrl: "https://github.com/pratham9634/knowledge_hub",
+          liveUrl: "https://knowledge-hub-o9bs.vercel.app/",
+          techStack: ["Next.js", "FastAPI", "MongoDB", "Supabase", "JWT", "React Query", "Tailwind CSS", "shadcn/ui"],
+          stats: [{ label: "API Calls", value: "-30% via debounce" }, { label: "Storage", value: "Supabase" }, { label: "Stack", value: "Next.js + FastAPI" }],
+          architecture: "Next.js frontend communicates with FastAPI REST backend. MongoDB stores metadata; Supabase handles file storage. React Query manages data fetching with debounced search reducing API calls by 30%.",
+          features: ["Upload and manage files, images, videos, links, and articles in one place", "Secure REST APIs with JWT authentication and token-based access control", "Debounced search with server-side pagination — reduced API calls by 30%", "Responsive UI built with Tailwind CSS, React Query, and shadcn/ui components"]
         },
         {
           id: "chaton",
           title: "ChatOn Messenger",
-          roman: "II",
+          roman: "IV",
           category: "fullstack",
           categoryLabel: "Full Stack Systems",
           discipline: "WebSocket Relay Architecture",
@@ -2219,14 +2354,14 @@
           githubUrl: "https://github.com/pratham9634/CHATON",
           liveUrl: "https://chat-on-4fl9.onrender.com/login",
           techStack: ["React", "Node.js", "Socket.io", "Express", "MongoDB", "Tailwind"],
-          stats: [{ label: "Protocols", value: "WebSocket" }, { label: "Latency", value: "<20ms" }, { label: "Database", value: "MongoDB" }],
+          stats: [{ label: "Protocols", value: "WebSocket" }, { label: "Latency", value: "&lt;20ms" }, { label: "Database", value: "MongoDB" }],
           architecture: "Event-driven WebSocket server with room broadcast routing and MongoDB caching.",
           features: ["Instant 1-on-1 and group socket room communication", "Real-time typing feedback and online status beacons", "Indexed MongoDB chat log with smooth infinite scroll", "Light and dark glassmorphic UI with sound effects"]
         },
         {
           id: "tools-station",
           title: "Tools Station",
-          roman: "III",
+          roman: "V",
           category: "fullstack",
           categoryLabel: "Full Stack Systems",
           discipline: "Developer Productivity Suite",
@@ -2262,22 +2397,22 @@
           techStack: ["Next.js", "Node.js", "YouTube Data API", "TailwindCSS"],
           stats: [{ label: "Framework", value: "Next.js" }, { label: "APIs", value: "YouTube v3" }, { label: "Deployment", value: "Vercel" }],
           architecture: "Next.js serverless functions handling API quota optimization and fast caching.",
-          features: ["Accurate YouTube playlist duration at 1.25x, 1.5x, and 2x speeds", "Instant file transfer utility with auto-expiring links", "Clean developer tools including JSON formatters & regex testers", "Ultra-fast Next.js server-rendered routes"]
+          features: ["Accurate YouTube playlist duration at 1.25x, 1.5x, and 2x speeds", "Instant file transfer utility with auto-expiring links", "Clean developer tools including JSON formatters &amp; regex testers", "Ultra-fast Next.js server-rendered routes"]
         }
       ],
       ai: [
         {
-          id: "ai-interview",
-          title: "AI Interview Platform",
+          id: "eval-chatbot-ui",
+          title: "EVAL Chatbot UI",
           roman: "I",
           category: "ai",
-          categoryLabel: "AI & Machine Learning",
-          discipline: "Generative NLP Assessment",
-          note: "Contextual AI-driven mock interviews with instant rubric scoring.",
-          deck: "An intelligent interview coaching engine powered by Large Language Models. Generates role-tailored technical and behavioral interview questions, evaluates spoken/text responses in real-time, and provides rubric-graded feedback.",
+          categoryLabel: "AI &amp; Machine Learning",
+          discipline: "LLM Evaluation &amp; Benchmarking",
+          note: "Interactive UI for multi-criteria LLM evaluation, citation checking &amp; SOP benchmarks.",
+          deck: "Frontend landing page for the Chatbot Evaluation Platform. Provides an interactive web interface to demonstrate multi-criteria LLM evaluations, citation checking, and SOP question benchmark guidelines. Backed by a Python evaluation engine and LLM Judge pipelines hosted separately.",
           binding: "Deep Amethyst cloth · neon emerald foil",
           format: "160 × 238 mm · intelligence edition",
-          theme: "AI Interview · intelligent evaluation",
+          theme: "EVAL Chatbot · LLM evaluation platform",
           motif: "Synaptic neural branches",
           motifKey: "orbits",
           paletteLabel: "Amethyst · emerald · platinum",
@@ -2298,96 +2433,14 @@
           width: 1.12,
           height: 1.68,
           depth: 0.29,
-          chapters: ["Prompt Engineering", "Voice Analysis", "Rubric Evaluation"],
+          chapters: ["LLM Evaluation UI", "Citation Checking", "SOP Benchmarks", "Judge Pipelines"],
           seed: 301,
-          githubUrl: "https://github.com/pratham9634/AI-Interview-Platform",
-          liveUrl: "https://ai-interview-platform.vercel.app/",
-          techStack: ["React", "Next.js", "OpenAI / Gemini API", "Speech Recognition", "Tailwind"],
-          stats: [{ label: "LLM Pipeline", value: "Gemini Pro" }, { label: "Audio", value: "WebSpeech" }, { label: "Scoring", value: "Multi-Metric" }],
-          architecture: "Streaming LLM prompt chains with real-time speech-to-text token processing.",
-          features: ["Dynamic question generation based on resume & job role", "Live speech-to-text transcription with silence detection", "Multi-dimensional scoring: Clarity, Technical Depth, & Structure", "Personalized improvement roadmaps with suggested answers"]
-        },
-        {
-          id: "ai-ui-library",
-          title: "AI UI Component Library",
-          roman: "II",
-          category: "ai",
-          categoryLabel: "AI & Machine Learning",
-          discipline: "Generative UI Synthesis",
-          note: "Natural language prompt to production-ready React components.",
-          deck: "A modern React & Tailwind CSS component library with an AI synthesis engine. Converts design prompts into accessible, themeable UI code with live interactive preview canvases and one-click copy.",
-          binding: "Obsidian cloth · holographic gold foil",
-          format: "156 × 230 mm · intelligence edition",
-          theme: "AI UI Library · generative components",
-          motif: "Procedural geometry array",
-          motifKey: "grid",
-          paletteLabel: "Obsidian · gold · ivory",
-          color: "#18181b",
-          foil: "#d97706",
-          palette: {
-            paper: "#f4f4f5",
-            paperDeep: "#e4e4e7",
-            paperPale: "#ffffff",
-            ink: "#18181b",
-            inkSoft: "#52525b",
-            wall: "#f0f0f2",
-            shelf: "#8c684d",
-            shelfDark: "#422d1e",
-            light: "#fffbeb",
-            fill: "#e4e4e7"
-          },
-          width: 1.06,
-          height: 1.6,
-          depth: 0.26,
-          chapters: ["Generative Code", "Component Primitives", "Design System"],
-          seed: 302,
-          githubUrl: "https://github.com/pratham9634/AI-UI-Component-Library",
-          liveUrl: "https://ui-library-ai.vercel.app/",
-          techStack: ["React", "TypeScript", "TailwindCSS", "Gemini API", "Radix UI"],
-          stats: [{ label: "Generation", value: "Sub-2s" }, { label: "Primitives", value: "Radix UI" }, { label: "Type Safety", value: "Strict TS" }],
-          architecture: "AST parsing and sandboxed React runtime rendering for generated component code.",
-          features: ["Prompt-to-component code synthesis with Tailwind CSS", "Live interactive playground with theme switching & responsive viewports", "Export directly to TypeScript, JSX, or shadcn/ui format", "Built-in accessibility compliance checks (ARIA attributes)"]
-        },
-        {
-          id: "ml-predictive",
-          title: "Machine Learning Suite",
-          roman: "III",
-          category: "ai",
-          categoryLabel: "AI & Machine Learning",
-          discipline: "Predictive Modeling & Data Science",
-          note: "Certified machine learning algorithms, models, and analytics.",
-          deck: "Comprehensive data science and machine learning research repository (NPTEL certified). Covers regression modeling, classification trees, ensemble methods, exploratory data analysis, and model benchmarks.",
-          binding: "Steel Teal cloth · champagne foil",
-          format: "152 × 224 mm · intelligence edition",
-          theme: "ML Suite · statistical modeling",
-          motif: "Continuous regression curvature",
-          motifKey: "paths",
-          paletteLabel: "Teal · champagne · slate",
-          color: "#115e59",
-          foil: "#0d9488",
-          palette: {
-            paper: "#f0fdfa",
-            paperDeep: "#ccfbf1",
-            paperPale: "#ffffff",
-            ink: "#042f2e",
-            inkSoft: "#115e59",
-            wall: "#e6f9f6",
-            shelf: "#8c684d",
-            shelfDark: "#422d1e",
-            light: "#ecfdf5",
-            fill: "#99f6e4"
-          },
-          width: 1.02,
-          height: 1.56,
-          depth: 0.25,
-          chapters: ["Feature Engineering", "Model Benchmarks", "Data Pipelines"],
-          seed: 303,
-          githubUrl: "https://github.com/pratham9634/ML-Projects",
-          liveUrl: "https://github.com/pratham9634/ML-Projects",
-          techStack: ["Python", "Scikit-Learn", "Pandas", "NumPy", "Streamlit", "Matplotlib"],
-          stats: [{ label: "Algorithms", value: "12+ Models" }, { label: "Certification", value: "NPTEL ML" }, { label: "Accuracy", value: ">94.2%" }],
-          architecture: "Data preprocessing, automated hyperparameter tuning, and Streamlit dashboards.",
-          features: ["Supervised & unsupervised learning pipeline notebooks", "Correlation matrix and feature importance visualizers", "Model evaluation benchmarks (ROC-AUC, F1-Score, RMSE)", "Interactive Streamlit app for real-time dataset predictions"]
+          githubUrl: "https://github.com/pratham9634/EVAL_CHATBOT_UI",
+          liveUrl: "https://eval-chatbot-ui.vercel.app/",
+          techStack: ["React", "Vite", "Tailwind CSS", "Python", "LLM Judge Pipelines"],
+          stats: [{ label: "Evaluation", value: "Multi-Criteria" }, { label: "Checking", value: "Citation + SOP" }, { label: "Backend", value: "LLM Judge" }],
+          architecture: "React/Vite frontend decoupled from a Python LLM Judge evaluation engine. The UI surfaces benchmark results, citation checks, and SOP test runs from backend pipeline execution.",
+          features: ["Multi-criteria LLM evaluation with configurable scoring dimensions", "Citation checking to verify model responses against source documents", "SOP question benchmark guidelines for structured evaluation workflows", "Decoupled architecture: UI frontend + Python LLM Judge backend engine"]
         }
       ],
       upcoming: [
@@ -2425,8 +2478,8 @@
           depth: 0.26,
           chapters: ["Dense/Sparse Hybrid Search", "Cross-Encoder Reranking", "Hallucination Guardrails"],
           seed: 401,
-          githubUrl: "https://github.com/pratham9634/Advanced-RAG-Chatbot",
-          liveUrl: "https://github.com/pratham9634/Advanced-RAG-Chatbot",
+          githubUrl: "",
+          liveUrl: "",
           techStack: ["Python", "LangChain", "Qdrant", "FastAPI", "Next.js", "Cohere", "GPT-4o"],
           stats: [{ label: "Search Mode", value: "Hybrid Dense+BM25" }, { label: "Latency", value: "<180ms" }, { label: "Precision", value: "98.4% Recall" }],
           architecture: "Semantic chunking strategy, cross-encoder neural rerankers, and contextual LangGraph memory loops.",
@@ -2434,44 +2487,67 @@
         },
         {
           id: "automl-platform",
-          title: "AutoML Platform",
+          title: "Open-Source AutoML & AI Data Analyst",
           roman: "II",
           category: "upcoming",
           categoryLabel: "Upcoming Projects",
-          discipline: "Low-Code Model Training & Deployment",
-          note: "Automated end-to-end machine learning pipeline from raw CSV to deployed REST API.",
-          deck: "Developer-first automated machine learning suite. Ingests tabular and image datasets, performs automated EDA & feature engineering, benchmarks across 15+ models (XGBoost, LightGBM, Neural Nets), and deploys one-click inference APIs with live Docker containers.",
+          discipline: "AutoML · Data Analysis · Model Training & Deployment",
+          note: "Open-source platform that lets users upload CSV or Excel datasets, automatically benchmark classification and regression models, identify the best-performing model, and chat with their data through an AI-powered data analyst.",
+          deck: "Developer-first open-source AutoML and AI data analysis suite. Ingests CSV and Excel datasets, performs automated EDA, data cleaning, preprocessing and feature engineering, benchmarks multiple machine learning algorithms for classification or regression, ranks models using cross-validation and configurable metrics, provides SHAP-based explainability, and includes an AI data analyst chatbot that answers natural-language questions, generates insights and visualizations, and helps users understand their dataset and model results. The best-performing model can be exported or deployed through a Dockerized REST API.",
           binding: "Deep Cobalt cloth · copper foil",
           format: "154 × 228 mm · upcoming research edition",
-          theme: "AutoML Platform · automated pipelines",
+          theme: "AutoML · AI Data Analyst · automated ML pipelines",
           motif: "Algorithmic neural graph",
-          motifKey: "grid",
+          motifKey: "neural",
           paletteLabel: "Cobalt · copper · cream",
           color: "#1e3a8a",
           foil: "#fb923c",
           palette: {
-            paper: "#f0f4fa",
-            paperDeep: "#dbe5f4",
-            paperPale: "#ffffff",
-            ink: "#0f2347",
-            inkSoft: "#3c5c8f",
-            wall: "#ecf2f9",
-            shelf: "#8c684d",
-            shelfDark: "#422d1e",
-            light: "#f0f6ff",
-            fill: "#c8daf5"
+            paper: "#0f172a",
+            paperDeep: "#020617",
+            paperPale: "#eff6ff",
+            ink: "#eff6ff",
+            inkSoft: "#93c5fd",
+            wall: "#0f172a",
+            shelf: "#3a2118",
+            shelfDark: "#1c0e0a",
+            light: "#fed7aa",
+            fill: "#3b82f6"
           },
           width: 1.04,
           height: 1.58,
           depth: 0.25,
-          chapters: ["Automated Feature Prep", "Hyperparameter Search", "One-Click Deploy"],
+          chapters: ["Automated Data Prep", "AutoML Model Benchmarking", "AI Data Analyst", "Model Explainability", "One-Click Deploy"],
           seed: 402,
-          githubUrl: "https://github.com/pratham9634/AutoML-Platform",
-          liveUrl: "https://github.com/pratham9634/AutoML-Platform",
-          techStack: ["Python", "FastAPI", "React", "TypeScript", "Ray Tune", "XGBoost", "Docker"],
-          stats: [{ label: "Pipelines", value: "Auto-Tune" }, { label: "Deployment", value: "One-Click Docker" }, { label: "Benchmark", value: "15+ Models" }],
-          architecture: "Distributed Ray worker clusters for parallel Bayesian hyperparameter search and automated container building.",
-          features: ["Automated exploratory data analysis with missing value imputation", "Multi-model leaderboards with SHAP explainability visualizations", "One-click auto-generated Swagger REST API and SDK endpoints", "Model drift monitoring and automated retraining triggers"]
+          githubUrl: "",
+          liveUrl: "",
+          techStack: ["Python", "FastAPI", "React", "TypeScript", "Pandas", "DuckDB", "Scikit-learn", "XGBoost", "LightGBM", "CatBoost", "AutoGluon", "Optuna", "SHAP", "Plotly", "Docker", "PostgreSQL"],
+          stats: [
+            { label: "Input", value: "CSV / Excel" },
+            { label: "ML Tasks", value: "Classification + Regression" },
+            { label: "Benchmark", value: "15+ Models" },
+            { label: "Analysis", value: "AI Data Analyst" },
+            { label: "Deployment", value: "One-Click Docker" }
+          ],
+          summary: "Open-source AutoML platform turning CSV and Excel datasets into optimized production models while providing an AI data analyst for conversational insights, visualization, and model understanding.",
+          architecture: "Automated pipeline for dataset ingestion, profiling, preprocessing, feature engineering, cross-validation, multi-model benchmarking, and hyperparameter optimization. Parallel ML workers evaluate multiple algorithms and generate a ranked model leaderboard with explainability metrics. DuckDB powers fast analytical queries over uploaded datasets, while an AI-powered data analyst translates natural-language questions into safe data queries, analysis, and visualizations. Selected models can be packaged and deployed as Dockerized REST APIs.",
+          features: [
+            "CSV and Excel dataset upload with automatic schema and data type detection",
+            "Automated exploratory data analysis with missing value detection, duplicate analysis, outlier detection, distributions, correlations, and feature statistics",
+            "Automatic preprocessing including missing value imputation, categorical encoding, scaling, and feature engineering",
+            "Automatic classification or regression workflow based on the selected target and problem type",
+            "Multi-model benchmarking across algorithms including Logistic Regression, Random Forest, Extra Trees, XGBoost, LightGBM, CatBoost, SVM, and Neural Networks",
+            "Cross-validation and configurable evaluation metrics for reliable model comparison",
+            "Interactive model leaderboard showing performance, training time, and model ranking",
+            "SHAP explainability and feature importance visualizations for understanding model behavior",
+            "AI-powered data analyst chatbot for asking natural-language questions about uploaded datasets",
+            "Natural-language data exploration with automatically generated queries, charts, summaries, and actionable insights",
+            "Chat-based analysis of correlations, trends, distributions, anomalies, and important features",
+            "AI assistant for explaining model performance, predictions, and feature importance",
+            "One-click auto-generated Swagger REST API and SDK endpoints",
+            "Docker-based model packaging and deployment",
+            "Model drift monitoring and automated retraining triggers"
+          ]
         }
       ]
     };
@@ -5227,15 +5303,63 @@
       detailTheme.textContent = book.theme || book.title;
       detailMotif.textContent = book.motif || "Engineered Systems";
 
+      const standardLinks = document.getElementById("standard-action-links");
+      const upcomingBanner = document.getElementById("upcoming-action-banner");
       const liveBtn = document.getElementById("detail-live-link");
+      const liveFallback = document.getElementById("detail-demo-fallback");
       const githubBtn = document.getElementById("detail-github-link");
-      if (liveBtn) {
-        liveBtn.href = book.liveUrl || "#";
-        liveBtn.style.display = book.liveUrl ? "inline-flex" : "none";
-      }
-      if (githubBtn) {
-        githubBtn.href = book.githubUrl || "#";
-        githubBtn.style.display = book.githubUrl ? "inline-flex" : "none";
+      const githubFallback = document.getElementById("detail-github-fallback");
+
+      const isUpcoming = book.category === "upcoming" || currentCategoryKey === "upcoming";
+
+      if (isUpcoming) {
+        // Upcoming project: Hide standard buttons, show dedicated in-development banner
+        if (standardLinks) standardLinks.style.display = "none";
+        if (upcomingBanner) upcomingBanner.style.display = "flex";
+      } else {
+        // Regular project: Show standard buttons container, hide upcoming banner
+        if (upcomingBanner) upcomingBanner.style.display = "none";
+        if (standardLinks) standardLinks.style.display = "flex";
+
+        // Check if project has an active, distinct live demo link
+        const hasLive = Boolean(book.liveUrl && book.liveUrl !== "#" && book.liveUrl.trim() !== "" && book.liveUrl !== book.githubUrl);
+        if (hasLive) {
+          if (liveBtn) {
+            liveBtn.href = book.liveUrl;
+            liveBtn.style.display = "inline-flex";
+          }
+          if (liveFallback) {
+            liveFallback.style.display = "none";
+          }
+        } else {
+          // No live demo available: display elegant fallback badge
+          if (liveBtn) {
+            liveBtn.style.display = "none";
+          }
+          if (liveFallback) {
+            liveFallback.style.display = "inline-flex";
+          }
+        }
+
+        // Check if project has a github repository link
+        const hasGithub = Boolean(book.githubUrl && book.githubUrl !== "#" && book.githubUrl.trim() !== "");
+        if (hasGithub) {
+          if (githubBtn) {
+            githubBtn.href = book.githubUrl;
+            githubBtn.style.display = "inline-flex";
+          }
+          if (githubFallback) {
+            githubFallback.style.display = "none";
+          }
+        } else {
+          // No github link: display fallback badge
+          if (githubBtn) {
+            githubBtn.style.display = "none";
+          }
+          if (githubFallback) {
+            githubFallback.style.display = "inline-flex";
+          }
+        }
       }
     }
 
