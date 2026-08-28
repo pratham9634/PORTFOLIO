@@ -2555,13 +2555,87 @@
     let currentCategoryKey = "frontend";
     let BOOKS = CATEGORIES_DATA[currentCategoryKey];
 
+    function forceCloseBook() {
+      if (mode !== "detail" && mode !== "opening" && mode !== "closing") return;
+
+      // Reset page drag state if active
+      if (pageDrag.active) {
+        const capturedPointerId = pageDrag.pointerId;
+        pageDrag.active = false;
+        pageDrag.pointerId = null;
+        pageDrag.progress = 0;
+        pageDrag.peakProgress = 0;
+        pageDrag.committed = false;
+        pageDrag.progressVelocity = 0;
+        pageDrag.verticalBias = 0;
+        pageDrag.lastProgress = 0;
+        pageDrag.lastTime = 0;
+        pageDrag.direction = 0;
+        pageDrag.kind = null;
+        canvas.classList.remove("is-page-dragging");
+        if (
+          capturedPointerId !== null
+          && canvas.hasPointerCapture?.(capturedPointerId)
+        ) {
+          canvas.releasePointerCapture(capturedPointerId);
+        }
+      }
+
+      // Reset detail press state
+      detailPress.active = false;
+      detailPress.pointerId = null;
+      detailPress.moved = false;
+      detailPress.allowClick = false;
+
+      // Reset book page pivots
+      if (activeBook) {
+        activeBook.pagePivots.forEach((pagePivot) => {
+          pagePivot.rotation.y = 0;
+          pagePivot.rotation.z = 0;
+        });
+        // Re-attach the book to shelfStage if it was detached during opening/detail
+        if (activeBook.root.parent !== shelfStage) {
+          shelfStage.attach(activeBook.root);
+        }
+        activeBook.contactShadow.visible = true;
+      }
+
+      // Snap all state back to hero
+      mode = "hero";
+      transitionTime = 0;
+      readingOpen = false;
+      currentSpread = 0;
+      detailBookHovered = false;
+      hoveredIndex = -1;
+
+      // Reset UI
+      experience.classList.remove("mode-detail", "is-opening", "is-closing");
+      detailPanel.setAttribute("aria-hidden", "true");
+      detailPanel.inert = true;
+      browseUi.inert = false;
+      controls.enabled = false;
+      canvas.classList.remove("is-page-dragging");
+
+      // Restore camera to shelf view
+      camera.position.copy(shelfCameraPosition);
+      controls.target.copy(shelfCameraTarget);
+      controls.update();
+      transitionCameraTarget.copy(shelfCameraTarget);
+      currentViewOffsetX = 0;
+      applyDetailViewOffset();
+      camera.lookAt(shelfCameraTarget);
+
+      // Restore shelf position to rest
+      shelfStage.position.copy(shelfRestPosition);
+    }
+
     function rebuildShelf(categoryKey) {
       if (!CATEGORIES_DATA[categoryKey]) return;
+      if (categoryKey === currentCategoryKey) return;
       currentCategoryKey = categoryKey;
       
-      if (mode === "detail" || mode === "opening") {
-        closeDetail();
-      }
+      // Force-close any open/opening/closing book instantly
+      forceCloseBook();
 
       // Safely remove existing rigs from shelfStage and dispose materials
       if (bookRigs && bookRigs.length) {
@@ -2586,7 +2660,7 @@
 
       BOOKS = CATEGORIES_DATA[categoryKey];
       selectedIndex = 0;
-      activeBook = null; // Do NOT set to integer
+      activeBook = null;
       targetPosition = 0;
       position = 0;
 
@@ -2612,7 +2686,9 @@
 
     window.addEventListener("message", (event) => {
       if (!event.data) return;
-      if (event.data.type === "SET_CATEGORY") {
+      if (event.data.type === "CLOSE_BOOK") {
+        forceCloseBook();
+      } else if (event.data.type === "SET_CATEGORY") {
         rebuildShelf(event.data.category);
       } else if (event.data.type === "SET_VISIBILITY") {
         suspended = !event.data.visible;

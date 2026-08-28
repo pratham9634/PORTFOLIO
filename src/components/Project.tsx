@@ -58,25 +58,36 @@ const Project: React.FC = () => {
     };
   }, []);
 
-  const handleSelectCategory = (cat: ProjectCategory) => {
-    setActiveCategory(cat);
-    
-    // Broadcast instantly to 3D bookshelf iframes
-    const broadcast = () => {
-      const iframes = document.querySelectorAll<HTMLIFrameElement>("iframe");
-      iframes.forEach((iframe) => {
-        if (iframe.contentWindow) {
-          iframe.contentWindow.postMessage(
-            { type: "SET_CATEGORY", category: cat },
-            "*"
-          );
-        }
-      });
-    };
+  const categoryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    broadcast();
-    // Safety retry in case iframe was receiving an active frame render
-    setTimeout(broadcast, 40);
+  const broadcastToIframes = (message: Record<string, unknown>) => {
+    const iframes = document.querySelectorAll<HTMLIFrameElement>("iframe");
+    iframes.forEach((iframe) => {
+      if (iframe.contentWindow) {
+        iframe.contentWindow.postMessage(message, "*");
+      }
+    });
+  };
+
+  const handleSelectCategory = (cat: ProjectCategory) => {
+    if (cat === activeCategory) return;
+
+    // Clear any pending category switch
+    if (categoryTimerRef.current) {
+      clearTimeout(categoryTimerRef.current);
+      categoryTimerRef.current = null;
+    }
+
+    setActiveCategory(cat);
+
+    // Step 1: Force-close any open book instantly
+    broadcastToIframes({ type: "CLOSE_BOOK" });
+
+    // Step 2: After a brief frame for the close to take effect, switch category
+    categoryTimerRef.current = setTimeout(() => {
+      broadcastToIframes({ type: "SET_CATEGORY", category: cat });
+      categoryTimerRef.current = null;
+    }, 80);
   };
 
   return (

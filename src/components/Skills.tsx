@@ -52,17 +52,91 @@ export const controls = {
 
 const SKILL_CATEGORIES: SkillCategory[] = [
   {
+    id: "languages",
+    category: "01 — Programming Languages",
+    subtitle: "Core languages for building scalable software",
+    skills: [
+      "C++",
+      "Python",
+      "JavaScript (ES6+)",
+      "TypeScript",
+      "SQL",
+      "HTML5",
+      "CSS3"
+    ],
+    gradient: "from-violet-100/90 via-indigo-50/70 to-violet-50/40 border-violet-200/80",
+    badgeClass: "bg-violet-50/80 text-violet-950 border-violet-200/90 hover:bg-neutral-950 hover:text-white hover:border-neutral-950 hover:shadow-md",
+    cardClass: "bg-white/95 border-violet-400/30 shadow-[0_12px_40px_rgba(139,92,246,0.08)]",
+    accentColor: "#7c3aed",
+    accentBg: "bg-violet-500",
+    config: {
+      y: -30,
+      x: 0,
+      rotate: -12,
+      zIndex: 2,
+    },
+  },
+  {
+    id: "genai",
+    category: "02 — GenAI / LLM",
+    subtitle: "Intelligent agents, RAG, & orchestration",
+    skills: [
+      "LLMs",
+      "RAG",
+      "LangChain",
+      "LangGraph",
+      "LLM Orchestration",
+      "Prompt Engineering",
+      "Reranking",
+      "Embeddings",
+      "RAG Evaluation",
+      "AI Agents"
+    ],
+    gradient: "from-cyan-100/90 via-teal-50/70 to-cyan-50/40 border-cyan-200/80",
+    badgeClass: "bg-cyan-50/80 text-cyan-950 border-cyan-200/90 hover:bg-neutral-950 hover:text-white hover:border-neutral-950 hover:shadow-md",
+    cardClass: "bg-white/95 border-cyan-400/30 shadow-[0_12px_40px_rgba(6,182,212,0.08)]",
+    accentColor: "#0891b2",
+    accentBg: "bg-cyan-500",
+    config: {
+      y: 10,
+      x: 155,
+      rotate: 6,
+      zIndex: 3,
+    },
+  },
+  {
+    id: "aiml",
+    category: "03 — AI / ML",
+    subtitle: "Data science, modeling & NLP pipelines",
+    skills: [
+      "NumPy",
+      "Pandas",
+      "Scikit-learn",
+      "Machine Learning",
+      "Deep Learning",
+      "NLP",
+      "Model Evaluation"
+    ],
+    gradient: "from-rose-100/90 via-pink-50/70 to-rose-50/40 border-rose-200/80",
+    badgeClass: "bg-rose-50/80 text-rose-950 border-rose-200/90 hover:bg-neutral-950 hover:text-white hover:border-neutral-950 hover:shadow-md",
+    cardClass: "bg-white/95 border-rose-400/30 shadow-[0_12px_40px_rgba(244,63,94,0.08)]",
+    accentColor: "#e11d48",
+    accentBg: "bg-rose-500",
+    config: {
+      y: -20,
+      x: 310,
+      rotate: -6,
+      zIndex: 4,
+    },
+  },
+  {
     id: "frontend",
-    category: "01 — Frontend",
+    category: "04 — Frontend",
     subtitle: "Modern, reactive & high-performance interfaces",
     skills: [
       "React.js",
       "Next.js",
-      "TypeScript",
-      "JavaScript (ES6+)",
       "Tailwind CSS",
-      "HTML5",
-      "CSS3",
       "Responsive UI",
       "State Management",
       "Redux"
@@ -73,24 +147,23 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     accentColor: "#ea580c",
     accentBg: "bg-orange-500",
     config: {
-      y: -20,
-      x: 0,
-      rotate: -12,
-      zIndex: 2,
+      y: 30,
+      x: 465,
+      rotate: 10,
+      zIndex: 5,
     },
   },
   {
     id: "backend",
-    category: "02 — Backend",
-    subtitle: "Scalable server architectures, APIs & event streams",
+    category: "05 — Backend",
+    subtitle: "Scalable server architectures & API integration",
     skills: [
       "Node.js",
       "Express.js",
       "FastAPI",
       "REST APIs",
-      "JWT Authentication",
+      "JWT & Session Authentication",
       "API Integration",
-      "RabbitMQ",
       "Redis"
     ],
     gradient: "from-emerald-100/90 via-teal-50/70 to-emerald-50/40 border-emerald-200/80",
@@ -99,23 +172,23 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     accentColor: "#059669",
     accentBg: "bg-emerald-500",
     config: {
-      y: 20,
-      x: 180,
-      rotate: 6,
-      zIndex: 3,
+      y: -10,
+      x: 620,
+      rotate: -4,
+      zIndex: 6,
     },
   },
   {
     id: "database",
-    category: "03 — Database",
+    category: "06 — Databases",
     subtitle: "Relational, document & high-speed vector storage",
     skills: [
-      "PostgreSQL",
       "MongoDB",
       "MongoDB Atlas",
+      "PostgreSQL",
       "SQL",
       "Qdrant",
-      "Vector Databases",
+      "Vector Databases"
     ],
     gradient: "from-blue-100/90 via-sky-50/70 to-blue-50/40 border-blue-200/80",
     badgeClass: "bg-blue-50/80 text-blue-950 border-blue-200/90 hover:bg-neutral-950 hover:text-white hover:border-neutral-950 hover:shadow-md",
@@ -123,24 +196,26 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     accentColor: "#2563eb",
     accentBg: "bg-blue-500",
     config: {
-      y: -60,
-      x: 360,
-      rotate: -4,
-      zIndex: 4,
+      y: 20,
+      x: 775,
+      rotate: 8,
+      zIndex: 7,
     },
   },
   {
     id: "tools",
-    category: "04 — Developer Tools",
-    subtitle: "Cloud infrastructure, version control & debugging",
+    category: "07 — Developer Tools",
+    subtitle: "Cloud infrastructure, version control & pipelines",
     skills: [
       "Git",
       "GitHub",
-      "Docker",
-      "AWS",
       "Postman",
-      "VS Code",
-      "Chrome DevTools",
+      "VSCode",
+      "ChromeDevTools",
+      "Docker",
+      "RabbitMQ",
+      "AWS",
+      "CI&CD"
     ],
     gradient: "from-purple-100/90 via-fuchsia-50/70 to-purple-50/40 border-purple-200/80",
     badgeClass: "bg-purple-50/80 text-purple-950 border-purple-200/90 hover:bg-neutral-950 hover:text-white hover:border-neutral-950 hover:shadow-md",
@@ -148,40 +223,12 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     accentColor: "#9333ea",
     accentBg: "bg-purple-500",
     config: {
-      y: 20,
-      x: 540,
-      rotate: 10,
-      zIndex: 5,
+      y: -40,
+      x: 930,
+      rotate: -10,
+      zIndex: 8,
     },
-  },
-  {
-    id: "ai-ml",
-    category: "05 — AI / ML",
-    subtitle: "Intelligent pipelines, RAG systems & LLM evaluations",
-    skills: [
-      "Python",
-      "Machine Learning",
-      "Deep Learning",
-      "RAG",
-      "Reranking",
-      "LLM Evaluation",
-      "LLM-as-a-Judge",
-      "Prompt Engineering",
-      "Embeddings",
-      "PageIndex",
-    ],
-    gradient: "from-rose-100/90 via-pink-50/70 to-rose-50/40 border-rose-200/80",
-    badgeClass: "bg-rose-50/80 text-rose-950 border-rose-200/90 hover:bg-neutral-950 hover:text-white hover:border-neutral-950 hover:shadow-md",
-    cardClass: "bg-white/95 border-rose-400/30 shadow-[0_12px_40px_rgba(244,63,94,0.08)]",
-    accentColor: "#e11d48",
-    accentBg: "bg-rose-500",
-    config: {
-      y: -10,
-      x: 720,
-      rotate: -6,
-      zIndex: 6,
-    },
-  },
+  }
 ];
 
 export const Skills: React.FC<SkillsProps> = ({
@@ -230,7 +277,7 @@ export const Skills: React.FC<SkillsProps> = ({
     <section
       id="skills"
       ref={sectionRef}
-      className="relative w-full min-h-screen py-24 sm:py-32 lg:py-36 tactile-menu-bg text-neutral-900 flex flex-col items-center justify-center overflow-hidden z-10 select-none border-y border-[#1c1917]/15"
+      className="relative w-full min-h-screen pt-24 pb-48 sm:pt-32 sm:pb-60 lg:pt-36 lg:pb-72 tactile-menu-bg text-neutral-900 flex flex-col items-center justify-center overflow-hidden z-10 select-none border-y border-[#1c1917]/15"
     >
       {/* React Bits GSAP Image Trail Animation */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-hidden">
@@ -267,8 +314,8 @@ export const Skills: React.FC<SkillsProps> = ({
         </p>
       </div>
 
-      {/* Interactive Cards Container */}
-      <div className="relative flex h-[540px] sm:h-[580px] w-full items-center justify-center overflow-visible px-4">
+      {/* Desktop Fan Layout (Visible on lg screens and above) */}
+      <div className="hidden lg:flex relative h-[540px] sm:h-[580px] w-full items-center justify-center overflow-visible px-4">
         <motion.div
           ref={ref}
           className="relative mx-auto flex h-[440px] w-full max-w-4xl items-center justify-center [--height:380px] [--width:245px] sm:[--height:430px] sm:[--width:275px] md:[--height:460px] md:[--width:300px]"
@@ -291,12 +338,12 @@ export const Skills: React.FC<SkillsProps> = ({
                     y: isActive
                       ? 0
                       : isAnyCardActive
-                        ? 380
+                        ? 270
                         : card.config.y,
                     x: isActive
                       ? 0
                       : isAnyCardActive
-                        ? offsetX * 0.35
+                        ? offsetX * 0.2
                         : offsetX,
                     rotate: isActive
                       ? 0
@@ -458,8 +505,6 @@ export const Skills: React.FC<SkillsProps> = ({
                                 </motion.button>
                               );
                             })}
-
-                            
                           </div>
 
                           {/* Active Footer Details */}
@@ -477,7 +522,6 @@ export const Skills: React.FC<SkillsProps> = ({
                             >
                               Close ✕
                             </button>
-                            
                           </div>
                         </motion.div>
                       )}
@@ -488,6 +532,156 @@ export const Skills: React.FC<SkillsProps> = ({
             );
           })}
         </motion.div>
+      </div>
+
+      {/* Mobile Grid Layout (Visible on screens smaller than lg) */}
+      <div className="w-full max-w-4xl px-4 lg:hidden flex flex-col gap-6 relative z-30">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+          {SKILL_CATEGORIES.map((card) => {
+            const isActive = isCurrentActive(card);
+            return (
+              <motion.div
+                key={card.id + "-mobile"}
+                layout
+                onClick={() => {
+                  setActive(isActive ? null : card);
+                }}
+                className={cn(
+                  "relative flex flex-col justify-between overflow-hidden rounded-3xl p-5 border backdrop-blur-2xl cursor-pointer transition-shadow duration-300 min-h-[240px]",
+                  isActive
+                    ? "shadow-lg border-neutral-400/40 ring-1 ring-neutral-400/10"
+                    : "shadow-md hover:shadow-lg border-neutral-200/60",
+                  card.cardClass
+                )}
+              >
+                {/* Top Gradient Header */}
+                <div
+                  className={cn(
+                    "relative h-20 w-full rounded-2xl bg-gradient-to-br border p-3 flex flex-col justify-between overflow-hidden",
+                    card.gradient
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs text-neutral-800 font-bold tracking-wide">
+                      {card.id.toUpperCase()}
+                    </span>
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-white/90 text-neutral-800 border border-black/10 shadow-xs">
+                      {card.skills.length} skills
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs"
+                      style={{ backgroundColor: card.accentColor }}
+                    />
+                    <span className="text-xs text-neutral-700 font-medium truncate">
+                      {card.subtitle}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Title & Skills */}
+                <div className="flex-1 flex flex-col justify-start mt-4">
+                  <h3
+                    className="text-lg font-bold tracking-tight text-neutral-950 mb-2"
+                    style={{ fontFamily: "var(--font-heading)" }}
+                  >
+                    {card.category}
+                  </h3>
+
+                  <AnimatePresence mode="wait">
+                    {!isActive ? (
+                      <motion.div
+                        key="mobile-collapsed"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex flex-col justify-between flex-1 mt-1"
+                      >
+                        <div className="flex flex-wrap gap-1.5 overflow-hidden mb-4">
+                          {card.skills.slice(0, 5).map((skill) => (
+                            <span
+                              key={skill}
+                              className={cn(
+                                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border shadow-xs transition-colors",
+                                card.badgeClass
+                              )}
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {card.skills.length > 5 && (
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-neutral-600 bg-neutral-100 border border-neutral-200">
+                              +{card.skills.length - 5} more
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-neutral-500 pt-3 border-t border-neutral-200/80 mt-auto">
+                          <span>Tap to expand</span>
+                          <span className="text-neutral-900 font-bold">↗</span>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="mobile-expanded"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="flex-1 flex flex-col justify-between mt-1"
+                      >
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 mt-2">
+                          {card.skills.map((skill) => {
+                            const isHovered = hoveredSkill === `${card.id}-${skill}`;
+                            return (
+                              <motion.button
+                                key={skill}
+                                type="button"
+                                whileTap={{ scale: 0.95 }}
+                                onMouseEnter={() => setHoveredSkill(`${card.id}-${skill}`)}
+                                onMouseLeave={() => setHoveredSkill(null)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                                className={cn(
+                                  "relative group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border shadow-xs transition-all duration-200 cursor-pointer",
+                                  card.badgeClass
+                                )}
+                              >
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full"
+                                  style={{
+                                    backgroundColor: card.accentColor,
+                                    boxShadow: isHovered ? `0 0 8px ${card.accentColor}` : "none",
+                                  }}
+                                />
+                                <span>{skill}</span>
+                              </motion.button>
+                            );
+                          })}
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-neutral-500 pt-3 border-t border-neutral-200/80 mt-auto">
+                          <span className="font-mono text-neutral-700 font-medium">
+                            {card.skills.length} Interactive Skills
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActive(null);
+                            }}
+                            className="text-neutral-700 hover:text-neutral-950 px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 transition-colors font-medium border border-neutral-200/60"
+                          >
+                            Close ✕
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
