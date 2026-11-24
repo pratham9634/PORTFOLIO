@@ -1,185 +1,137 @@
-import React, { useEffect, useRef, useState } from "react";
-import { CompleteShelfLandingPage } from "@designcodeio/threeui";
-import "@designcodeio/threeui/style.css";
-import { SketchbookNav } from "./SketchbookNav";
+import React, { useState } from "react";
+import {
+  ProjectCategory,
+  ProjectVolume,
+  CATEGORY_PROJECTS,
+  CATEGORIES_INFO,
+} from "../data/projectsData";
+import { FolderTabs } from "./showcase/FolderTabs";
+import { HangingWireTrack } from "./showcase/HangingWireTrack";
+import { MagnifiedSheetModal } from "./showcase/MagnifiedSheetModal";
 import { RoughSketch } from "./RoughSketch";
-import { Sparkles, BookOpen } from "lucide-react";
+import { BookOpen, Sparkles, FolderKanban } from "lucide-react";
 
-import { ProjectCategory } from "../data/projectsData";
-
-const Project: React.FC = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+export const Project: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<ProjectCategory>("frontend");
+  const [selectedProject, setSelectedProject] = useState<ProjectVolume | null>(null);
 
-  useEffect(() => {
-    // Forward window scroll when user scrolls over the 3D canvas iframe
-    const handleMessage = (e: MessageEvent) => {
-      if (e.data && e.data.type === "THREEUI_SCROLL") {
-        const delta = e.data.deltaY || 0;
-        const lenis = (window as any).lenis;
-        if (lenis) {
-          lenis.scrollTo(window.scrollY + delta, { immediate: false, duration: 0.6 });
-        } else {
-          window.scrollBy({
-            top: delta,
-            left: e.data.deltaX || 0,
-            behavior: "auto",
-          });
-        }
-      }
-    };
-    window.addEventListener("message", handleMessage);
-
-    // Pause 3D rendering when section is off-screen
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        const isVisible = entry?.isIntersecting ?? true;
-        if (sectionRef.current) {
-          const iframe = sectionRef.current.querySelector("iframe");
-          if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage(
-              { type: "SET_VISIBILITY", visible: isVisible },
-              "*"
-            );
-          }
-        }
-      },
-      { threshold: 0.05 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      window.removeEventListener("message", handleMessage);
-      observer.disconnect();
-    };
-  }, []);
-
-  const categoryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const broadcastToIframes = (message: Record<string, unknown>) => {
-    const iframes = document.querySelectorAll<HTMLIFrameElement>("iframe");
-    iframes.forEach((iframe) => {
-      if (iframe.contentWindow) {
-        iframe.contentWindow.postMessage(message, "*");
-      }
-    });
+  // Compute work counts per category
+  const projectCounts: Record<ProjectCategory, number> = {
+    frontend: CATEGORY_PROJECTS.frontend.length,
+    fullstack: CATEGORY_PROJECTS.fullstack.length,
+    ai: CATEGORY_PROJECTS.ai.length,
+    upcoming: CATEGORY_PROJECTS.upcoming.length,
   };
 
-  const handleSelectCategory = (cat: ProjectCategory) => {
-    if (cat === activeCategory) return;
-
-    // Clear any pending category switch
-    if (categoryTimerRef.current) {
-      clearTimeout(categoryTimerRef.current);
-      categoryTimerRef.current = null;
-    }
-
-    setActiveCategory(cat);
-
-    // Step 1: Force-close any open book instantly
-    broadcastToIframes({ type: "CLOSE_BOOK" });
-
-    // Step 2: After a brief frame for the close to take effect, switch category
-    categoryTimerRef.current = setTimeout(() => {
-      broadcastToIframes({ type: "SET_CATEGORY", category: cat });
-      categoryTimerRef.current = null;
-    }, 80);
-  };
+  const activeProjects = CATEGORY_PROJECTS[activeCategory] || [];
+  const currentCategoryInfo = CATEGORIES_INFO[activeCategory];
 
   return (
     <section
-      ref={sectionRef}
       id="projects"
-      className="relative w-full min-h-[1020px] h-screen tactile-menu-bg flex flex-col select-none border-y border-[#1c1917]/15"
+      className="relative w-full min-h-[920px] tactile-menu-bg flex flex-col select-none border-y border-[#1c1917]/15 overflow-hidden"
     >
       {/* Background Subtle Sketch Grid & Light Paper Texture Grain */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.06]"
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.07]"
         style={{
           backgroundImage: `radial-gradient(circle, #2b251f 1px, transparent 1px)`,
-          backgroundSize: "24px 24px",
+          backgroundSize: "22px 22px",
         }}
       />
 
       {/* Decorative Sketchbook Side Spiral Bindings (Left & Right desktop accents) */}
-      <div className="hidden lg:block absolute left-3 top-20 bottom-20 w-6 pointer-events-none z-20 opacity-40">
+      <div className="hidden lg:block absolute left-3 top-24 bottom-24 w-6 pointer-events-none z-20 opacity-35">
         <RoughSketch
           type="spiral"
-          stroke="#a38f7b"
+          stroke="#9c8772"
           strokeWidth={1.5}
           roughness={1}
           className="w-full h-full"
         />
       </div>
-      <div className="hidden lg:block absolute right-3 top-20 bottom-20 w-6 pointer-events-none z-20 opacity-40">
+      <div className="hidden lg:block absolute right-3 top-24 bottom-24 w-6 pointer-events-none z-20 opacity-35">
         <RoughSketch
           type="spiral"
-          stroke="#a38f7b"
+          stroke="#9c8772"
           strokeWidth={1.5}
           roughness={1}
           className="w-full h-full"
         />
       </div>
 
-      {/* Top Sketchbook Journal Category Navigation */}
-      <div className="relative z-30 pt-16 sm:pt-20 md:pt-22 px-3 sm:px-6">
-        <SketchbookNav
+      {/* Header Title Section */}
+      <div className="relative z-20 pt-16 sm:pt-20 px-4 text-center max-w-3xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ede5d4] border border-[#cfc0ab] text-xs font-mono text-[#5c4c3b] mb-3 shadow-xs">
+          <FolderKanban className="w-3.5 h-3.5 text-[#2563eb]" />
+          <span>Interactive Project Archive</span>
+        </div>
+        <h2 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-[#1c1917]">
+          Featured Works
+        </h2>
+        <p className="mt-2 text-xs sm:text-sm text-[#695847] font-sans max-w-xl mx-auto">
+          Choose a folder to open its studio wire rack. Click any hanging sheet to magnify the full case study.
+        </p>
+      </div>
+
+      {/* Step 1: Tactile Category Folders Selection Hub */}
+      <div className="relative z-20 mt-4">
+        <FolderTabs
           activeCategory={activeCategory}
-          onSelectCategory={handleSelectCategory}
+          onSelectCategory={(cat) => setActiveCategory(cat)}
+          projectCounts={projectCounts}
         />
       </div>
 
-      {/* 3D Bookshelf Canvas Area */}
-      <div className="relative flex-1 w-full h-0 min-h-0">
-        <CompleteShelfLandingPage
-          headingFont="geist"
-          bodyFont="inter"
-          headingWeight="500"
-          bodyWeight="400"
-          primaryColor="#b85d32"
-          headingSize={60}
-          bodySize={12}
-          headingLetterSpacing={-0.055}
-          className="w-full h-full"
+      {/* Step 2: The Studio Hanging Wire Gallery */}
+      <div className="relative z-10 flex-1 flex flex-col justify-center min-h-[460px]">
+        <HangingWireTrack
+          projects={activeProjects}
+          onSelectProject={(project) => setSelectedProject(project)}
+          categoryLabel={currentCategoryInfo.name}
         />
+      </div>
 
-        {/* Floating Sketchbook Annotations at Bottom */}
-        <div className="absolute bottom-4 left-8 hidden md:flex items-center gap-2 pointer-events-none z-20">
+      {/* Bottom Tangible Annotations & Tips */}
+      <div className="relative z-20 w-full max-w-5xl mx-auto px-6 pb-12 pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-[#6e5d4c]">
+        <div className="flex items-center gap-2">
           <RoughSketch
             type="box"
             stroke="#b89d82"
             strokeWidth={1.2}
-            roughness={1.4}
-            fill="rgba(255, 255, 255, 0.9)"
-            className="px-3.5 py-2 backdrop-blur-md shadow-sm"
+            roughness={1.3}
+            fill="rgba(255, 255, 255, 0.85)"
+            className="px-3 py-1.5 shadow-xs"
           >
-            <div className="flex items-center gap-2 text-[11px] font-mono text-[#4a3e33]">
-              <BookOpen className="w-3.5 h-3.5 text-[#b85d32]" />
-              <span>Click book to pull from shelf · Drag in 3D</span>
+            <div className="flex items-center gap-1.5 text-[11px]">
+              <Sparkles className="w-3.5 h-3.5 text-[#d97706]" />
+              <span>Swaying sheets on wire · Click to unclip & zoom</span>
             </div>
           </RoughSketch>
         </div>
 
-        <div className="absolute bottom-4 right-8 hidden md:flex items-center gap-2 pointer-events-none z-20">
+        <div className="flex items-center gap-2">
           <RoughSketch
             type="box"
             stroke="#b89d82"
             strokeWidth={1.2}
-            roughness={1.4}
-            fill="rgba(255, 255, 255, 0.9)"
-            className="px-3.5 py-2 backdrop-blur-md shadow-sm"
+            roughness={1.3}
+            fill="rgba(255, 255, 255, 0.85)"
+            className="px-3 py-1.5 shadow-xs"
           >
-            <div className="flex items-center gap-2 text-[11px] font-mono text-[#4a3e33]">
-              <Sparkles className="w-3.5 h-3.5 text-[#b85d32]" />
-              <span>Click "Open book" or cover to read pages</span>
+            <div className="flex items-center gap-1.5 text-[11px]">
+              <BookOpen className="w-3.5 h-3.5 text-[#2563eb]" />
+              <span>Multi-sheet stacking dossier with live previews</span>
             </div>
           </RoughSketch>
         </div>
       </div>
+
+      {/* Step 3 & 4: Magnified Sheet Inspection Modal with Stacking Pages */}
+      <MagnifiedSheetModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
     </section>
   );
 };
